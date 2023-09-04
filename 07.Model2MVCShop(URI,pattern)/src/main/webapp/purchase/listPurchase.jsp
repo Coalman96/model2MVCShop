@@ -13,8 +13,16 @@
 	<title>구매 목록조회</title>
 </c:if>
 <link rel="stylesheet" href="/css/admin.css" type="text/css">
-
+<script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
 <script type="text/javascript">
+
+	$(function () {
+		
+		$('form').attr("method", "POST").attr("action", "/purchase/listPurchase?menu=${param.menu}").submit();
+		
+		
+	})
+
 	function fncGetPurchaseList(currentPage) {
 		document.getElementById("currentPage").value = currentPage;
 		document.detailForm.submit();
@@ -26,8 +34,9 @@
 
 <div style="width: 98%; margin-left: 10px;">
 
-<form name="detailForm" action="/purchase/listPurchase?menu=${param.menu}" method="post">
 
+<!-- <form name="detailForm" action="/purchase/listPurchase?menu=${param.menu}" method="post"> -->
+<form name="detailForm">
 <table width="100%" height="37" border="0" cellpadding="0"	cellspacing="0">
 	<tr>
 		<td width="15" height="37"><img src="/images/ct_ttl_img01.gif"width="15" height="37"></td>
