@@ -12,6 +12,8 @@
 function history(){
 	popWin = window.open("/history.jsp","popWin","left=300, top=200, width=300, height=200, marginwidth=0, marginheight=0, scrollbars=no, scrolling=no, menubar=no, resizable=no");
 }
+
+
 </script>
 </head>
 
@@ -41,7 +43,7 @@ function history(){
 							<!-- //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 							<a href="/listUser.do" target="rightFrame">회원정보조회</a>
 							////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-							<a href="/user/listUser" target="rightFrame">회원정보조회</a>
+							<a href="/user/json/listUser" target="rightFrame">회원정보조회</a>
 						</td>
 					</tr>
 				</c:if>

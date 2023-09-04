@@ -19,14 +19,14 @@ window.onload = function(){
 	}
 }
 
-function fncCheckDuplication() {
+function fncCheckDuplication(userId) {
 	// Form 유효성 검증
 	if(document.detailForm.userId.value != null && document.detailForm.userId.value.length >0) {
-	   	
+	   	userId = userId
 		///////////////////////////////////////////////////////////////////////////////////////////////
 		//document.detailForm.action='/checkDuplication.do';
 	    ///////////////////////////////////////////////////////////////////////////////////////////////
-	    document.detailForm.action='/user/checkDuplication';
+	    document.detailForm.action='/user/json/checkDuplication/'+userId;
 	    
 		document.detailForm.submit();
 		
@@ -123,7 +123,7 @@ function fncUseId() {
 									<img src="/images/ct_btng01.gif" width="4" height="21">
 								</td>
 								<td align="center" background="/images/ct_btng02.gif" class="ct_btn" style="padding-top:3px;">
-									<a href="javascript:fncCheckDuplication();">중복확인</a>
+									<a href="javascript:fncCheckDuplication(${userId});">중복확인</a>
 								</td>
 								<td width="4" height="21">
 									<img src="/images/ct_btng03.gif" width="4" height="21"/>
