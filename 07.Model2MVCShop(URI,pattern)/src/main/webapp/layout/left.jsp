@@ -7,14 +7,62 @@
 <title>Model2 MVC Shop</title>
 
 <link href="/css/left.css" rel="stylesheet" type="text/css">
+	<!-- CDN(Content Delivery Network) 호스트 사용 -->
+	<script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+	<script type="text/javascript">
+	
+		 $(function() {
 
-<script type="text/javascript">
-function history(){
-	popWin = window.open("/history.jsp","popWin","left=300, top=200, width=300, height=200, marginwidth=0, marginheight=0, scrollbars=no, scrolling=no, menubar=no, resizable=no");
-}
+		 	$( ".Depth03:contains('개인정보조회')" ).on("click" , function() {
 
+				$(window.parent.frames["rightFrame"].document.location).attr("href","/user/getUser?userId=${user.userId}");
+			});
+			
+		 	$( ".Depth03:contains('회원정보조회')" ).on("click" , function() {
+				//json
+				//$(window.parent.frames["rightFrame"].document.location).attr("href","/user/json/listUser");
+		 		$(window.parent.frames["rightFrame"].document.location).attr("href","/user/listUser");
+			}); 
+		 	
+		 	$( ".Depth03:contains('판매상품등록')" ).on("click" , function() {
 
-</script>
+		 		$(window.parent.frames["rightFrame"].document.location).attr("href","../product/addProductView.jsp");
+			});
+		 	
+		 	$( ".Depth03:contains('판매상품관리')" ).on("click" , function() {
+
+		 		$(window.parent.frames["rightFrame"].document.location).attr("href","/product/listProduct?menu=manage");
+			}); 
+		 	
+		 	$( ".Depth03:contains('상품검색')" ).on("click" , function() {
+
+		 		$(window.parent.frames["rightFrame"].document.location).attr("href","/product/listProduct?menu=search");
+			});
+		 	
+		 	$( ".Depth03:contains('구매이력조회')" ).on("click" , function() {
+
+		 		$(window.parent.frames["rightFrame"].document.location).attr("href","/purchase/listPurchase.do?menu=search");
+			}); 
+		 	
+		 	$( ".Depth03:contains('배송관리')" ).on("click" , function() {
+
+		 		$(window.parent.frames["rightFrame"].document.location).attr("href","/purchase/listPurchase?menu=manage");
+			});
+		 	
+		 	$( ".Depth03:contains('최근본상품')" ).on("click" , function() {
+
+		 		history()
+		 		
+			}); 
+		 	
+			function history(){
+				popWin = window.open("/history.jsp",
+															"popWin",
+															"left=300, top=200, width=300, height=200, marginwidth=0, marginheight=0, scrollbars=no, scrolling=no, menubar=no, resizable=no");
+			}
+		});	
+		 
+	</script>
 </head>
 
 <body background="/images/left/imgLeftBg.gif" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0"  >
@@ -32,7 +80,7 @@ function history(){
 							<!-- //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 							<a href="/getUser.do?userId=${user.userId}" target="rightFrame">개인정보조회</a>
 							////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-							<a href="/user/getUser?userId=${user.userId}" target="rightFrame">개인정보조회</a>
+							개인정보조회
 						</td>
 					</tr>
 				</c:if>
@@ -43,7 +91,7 @@ function history(){
 							<!-- //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 							<a href="/listUser.do" target="rightFrame">회원정보조회</a>
 							////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-							<a href="/user/json/listUser" target="rightFrame">회원정보조회</a>
+							회원정보조회
 						</td>
 					</tr>
 				</c:if>
@@ -62,12 +110,18 @@ function history(){
 			<table  border="0" cellspacing="0" cellpadding="0" width="159">
 				<tr>
 					<td class="Depth03">
-						<a href="../product/addProductView.jsp;" target="rightFrame">판매상품등록</a>
+					<!-- //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+							<a href="../product/addProductView.jsp;" target="rightFrame">판매상품등록</a>
+							////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+						판매상품등록
 					</td>
 				</tr>
 				<tr>
 					<td class="Depth03">
-						<a href="/product/listProduct?menu=manage"  target="rightFrame">판매상품관리</a>
+					<!-- //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+							<a href="/product/listProduct?menu=manage"  target="rightFrame">판매상품관리</a>
+							////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+						판매상품관리
 					</td>
 				</tr>
 				<tr>
@@ -84,21 +138,27 @@ function history(){
 		<table  border="0" cellspacing="0" cellpadding="0" width="159">
 			<tr>
 				<td class="Depth03">
-					<a href="/product/listProduct?menu=search" target="rightFrame">상 품 검 색</a>
+				<!-- //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+					<a href="/product/listProduct?menu=search" target="rightFrame">상품검색</a>
+				////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+					상품검색
 				</td>
 			</tr>
 			
 			<c:if test="${user.role eq 'user'}">
 			<tr>
 				<td class="Depth03">
+				<!-- //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 					<a href="/purchase/listPurchase.do?menu=search"  target="rightFrame">구매이력조회</a>
+				////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+					구매이력조회
 				</td>
 			</tr>
 			</c:if>
 			<c:if test="${user.role eq 'admin'}">
 			<tr>
 				<td class="Depth03">
-					<a href="/purchase/listPurchase?menu=manage"  target="rightFrame">배 송 관 리</a>
+					배송관리
 				</td>
 			</tr>
 			</c:if>
@@ -107,7 +167,7 @@ function history(){
 				<td class="DepthEnd">&nbsp;</td>
 			</tr>
 			<tr>
-				<td class="Depth03"><a href="javascript:history()">최근 본 상품</a></td>
+			<td class="Depth03">최근본상품</td>
 			</tr>
 		</table>
 	</td>

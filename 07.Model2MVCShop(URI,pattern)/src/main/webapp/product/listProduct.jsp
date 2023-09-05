@@ -25,16 +25,36 @@
 <title>상품 목록조회</title>
 
 <link rel="stylesheet" href="/css/admin.css" type="text/css">
-
+<!-- CDN(Content Delivery Network) 호스트 사용 -->
+<script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
 <script type="text/javascript">
-function fncGetProductList(currentPage){
-	if(currentPage == undefined){
-		currentPage=1;
-	}
-	document.getElementById("currentPage").value = currentPage;
-	document.detailForm.submit();
-}
+	
 
+	
+	$(function () {
+
+		$('td.ct_btn01:contains("검색")').on('click',function(){
+			
+			fncGetProductList(1)
+			
+		})
+
+		
+	$(".ct_list_pop td:nth-child(3)").css("color" , "red");
+							
+	$(".ct_list_pop:nth-child(even)").css("background-color" , "whitesmoke");
+
+	})
+	
+	function fncGetProductList(currentPage) {
+	if (currentPage == undefined) {
+		currentPage = 1;
+	}
+	$('#currentPage').val(currentPage)
+
+	$('form').attr("method", "POST").attr("action",
+	"/product/listProduct?menu=${param.menu}").submit()
+}
 </script>
 </head>
 
@@ -42,7 +62,7 @@ function fncGetProductList(currentPage){
 
 <div style="width:98%; margin-left:10px;">
 
-<form name="detailForm"  action="/product/listProduct?menu=${param.menu}" method="post">
+<form name="detailForm" >
 
 <table width="100%" height="37" border="0" cellpadding="0"	cellspacing="0">
 	<tr>
@@ -80,7 +100,7 @@ function fncGetProductList(currentPage){
 				<option value="1" ${ ! empty search.searchCondition && search.searchCondition==1 ? "selected" : "" }>상품명</option>
 				<option value="2" ${ ! empty search.searchCondition && search.searchCondition==2 ? "selected" : "" }>상품가격</option>
 			</select>
-			<input type="text" value="" name="searchKeyword"  
+			<input type="text" name="searchKeyword"  
 						value="${! empty search.searchKeyword ? search.searchKeyword : '' }"
 						class="ct_input_g" style="width:200px; height:19px" />
 		</td>
@@ -91,7 +111,7 @@ function fncGetProductList(currentPage){
 						<img src="/images/ct_btnbg01.gif" width="17" height="23">
 					</td>
 					<td background="/images/ct_btnbg02.gif" class="ct_btn01" style="padding-top:3px;">
-						<a href="javascript:fncGetProductList();">검색</a>
+						검색
 					</td>
 					<td width="14" height="23">
 						<img src="/images/ct_btnbg03.gif" width="14" height="23">
@@ -186,24 +206,7 @@ function fncGetProductList(currentPage){
 <table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top:10px;">
 	<tr>
 		<td align="center">
-			<input type="hidden" id="currentPage" name="currentPage" value=""/>
-			<%-- /////////////////////// EL / JSTL 적용으로 주석 처리 ////////////////////////
-			<% if( resultPage.getCurrentPage() <= resultPage.getPageUnit() ){ %>
-					
-			<% }else{ %>
-					<a href="javascript:fncGetProductList('<%=resultPage.getCurrentPage()-1%>')">&lt;&lt;</a>
-			<% } %>
-
-			<%	for(int i=resultPage.getBeginUnitPage();i<= resultPage.getEndUnitPage() ;i++){	%>
-					<a href="javascript:fncGetProductList('<%=i %>');"><%=i %></a>
-			<% 	}  %>
-	
-			<% if( resultPage.getEndUnitPage() >= resultPage.getMaxPage() ){ %>
-					
-			<% }else{ %>
-					<a href="javascript:fncGetProductList('<%=resultPage.getEndUnitPage()+1%>')">&gt;&gt;</a>
-			<% } %>
-			/////////////////////// EL / JSTL 적용으로 주석 처리 //////////////////////// --%>
+			<input type="hidden" id="currentPage" name="currentPage" value="0"/>
 			
 			<jsp:include page="../common/pageNavigator.jsp">
 				<jsp:param name="file" value="Product" />

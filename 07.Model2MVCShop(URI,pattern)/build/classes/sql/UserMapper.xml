@@ -53,13 +53,13 @@
 	  	FROM (	SELECT inner_table.* , ROWNUM AS row_seq
 	  					FROM		(	SELECT user_id , user_name , email
 											FROM users
-											<if test="searchCondition != null">
+											<if test="searchKeyword != null">
 												<where>
 													<if test="searchCondition == 0 and searchKeyword !='' ">
-										 				user_id = #{searchKeyword}
+										 				user_id LIKE '${searchKeyword}%'
 													</if>
 													<if test="searchCondition == 1 and searchKeyword !='' ">
-										 				user_name = #{searchKeyword}
+										 				user_name LIKE '${searchKeyword}%'
 													</if>
 												</where>
 											</if>
@@ -86,10 +86,10 @@
 						<if test="searchCondition != null">
 							<where>
 								<if test="searchCondition == 0 and searchKeyword !='' ">
-						 			user_id = #{searchKeyword}
+									user_id LIKE '${searchKeyword}%'
 								</if>
 								<if test="searchCondition == 1 and searchKeyword !='' ">
-						 		user_name = #{searchKeyword}
+									user_name LIKE '${searchKeyword}%'
 								</if>
 							</where>
 						</if> ) countTable						

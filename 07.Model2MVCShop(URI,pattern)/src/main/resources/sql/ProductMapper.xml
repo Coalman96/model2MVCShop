@@ -15,7 +15,7 @@
 		<result property="price" 				column="price" 					jdbcType="NUMERIC" />
 		<result property="fileName" 			column="image_file" 		jdbcType="VARCHAR" />
 		<result property="regDate" 				column="reg_date" 					jdbcType="DATE" />
-		<result property="prodCount" 				column="prod_count" 					jdbcType="NUMERIC" />
+		<result property="prodCount" 				column="PROD_COUNT" 					jdbcType="NUMERIC" />
 	</resultMap>
 	
 	<!-- SQL : INSERT -->
