@@ -1,23 +1,22 @@
 <%@ page language="java" contentType="text/html; charset=EUC-KR"
 	pageEncoding="EUC-KR"%>
+	
 <!DOCTYPE html>
 <html>
 <head>
-<title>ìƒí’ˆë“±ë¡</title>
+<title>»óÇ°µî·Ï</title>
 
 <link rel="stylesheet" href="/css/admin.css" type="text/css">
-<!-- CDN(Content Delivery Network) í˜¸ìŠ¤íŠ¸ ì‚¬ìš© -->
-<script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
-<script type="text/javascript" src="../javascript/calendar.js">
-	
-</script>
+<!-- CDN(Content Delivery Network) È£½ºÆ® »ç¿ë -->
+<script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"></script>
+<script src="../javascript/calendar.js"></script>
 <script type="text/javascript">
 
 	$(function () {
 		
 
 	function fncAddProduct() {
-		//Form ìœ íš¨ì„± ê²€ì¦
+		//Form À¯È¿¼º °ËÁõ
 
 		let name = $('input[name="prodName"]').val()
 		let detail = $('input[name="prodDetail"]').val()
@@ -27,23 +26,23 @@
 		let prodCount = $('input[name="prodCount"]').val()
 
 		if (name == null || name.length < 1) {
-			alert("ìƒí’ˆëª…ì€ ë°˜ë“œì‹œ ì…ë ¥í•˜ì—¬ì•¼ í•©ë‹ˆë‹¤.");
+			alert("»óÇ°¸íÀº ¹İµå½Ã ÀÔ·ÂÇÏ¿©¾ß ÇÕ´Ï´Ù.");
 			return;
 		}
 		if (detail == null || detail.length < 1) {
-			alert("ìƒí’ˆìƒì„¸ì •ë³´ëŠ” ë°˜ë“œì‹œ ì…ë ¥í•˜ì—¬ì•¼ í•©ë‹ˆë‹¤.");
+			alert("»óÇ°»ó¼¼Á¤º¸´Â ¹İµå½Ã ÀÔ·ÂÇÏ¿©¾ß ÇÕ´Ï´Ù.");
 			return;
 		}
 		if (manuDate == null || manuDate.length < 1) {
-			alert("ì œì¡°ì¼ìëŠ” ë°˜ë“œì‹œ ì…ë ¥í•˜ì…”ì•¼ í•©ë‹ˆë‹¤.");
+			alert("Á¦Á¶ÀÏÀÚ´Â ¹İµå½Ã ÀÔ·ÂÇÏ¼Å¾ß ÇÕ´Ï´Ù.");
 			return;
 		}
 		if (price == null || price.length < 1) {
-			alert("ê°€ê²©ì€ ë°˜ë“œì‹œ ì…ë ¥í•˜ì…”ì•¼ í•©ë‹ˆë‹¤.");
+			alert("°¡°İÀº ¹İµå½Ã ÀÔ·ÂÇÏ¼Å¾ß ÇÕ´Ï´Ù.");
 			return;
 		}
 		if (prodCount == null || prodCount.length < 1) {
-			alert("ìˆ˜ëŸ‰ì€ ë°˜ë“œì‹œ ì…ë ¥í•˜ì…”ì•¼ í•©ë‹ˆë‹¤.");
+			alert("¼ö·®Àº ¹İµå½Ã ÀÔ·ÂÇÏ¼Å¾ß ÇÕ´Ï´Ù.");
 			return;
 		}
 
@@ -60,19 +59,20 @@
 
 	}
 	
-	$('td.ct_btn01:contains("ë“±ë¡")').on('click',function (){
+	$('td.ct_btn01:contains("µî·Ï")').on('click',function (){
 		
 		fncAddProduct()
 	})
 	
-	$('td.ct_btn01:contains("ì·¨ì†Œ")').on('click',function (){
+	$('td.ct_btn01:contains("Ãë¼Ò")').on('click',function (){
 		
 		resetData()
 	})
 	
 	
-	$("img[src='../images/ct_icon_date.gif']").click(function() {
-	    show_calendar($('input[name="manuDate"]'), $('input[name="manuDate"]').val());
+	$("img[src='../images/ct_icon_date.gif']").on('click',function() {
+		show_calendar('document.detailForm.manuDate', $('input[name="manuDate"]').val());
+
 	});
 	
 	
@@ -93,7 +93,7 @@
 					style="padding-left: 10px;">
 					<table width="100%" border="0" cellspacing="0" cellpadding="0">
 						<tr>
-							<td width="93%" class="ct_ttl01">ìƒí’ˆë“±ë¡</td>
+							<td width="93%" class="ct_ttl01">»óÇ°µî·Ï</td>
 							<td width="20%" align="right">&nbsp;</td>
 						</tr>
 					</table>
@@ -109,7 +109,7 @@
 				<td height="1" colspan="3" bgcolor="D6D6D6"></td>
 			</tr>
 			<tr>
-				<td width="104" class="ct_write">ìƒí’ˆëª… <imgsrc
+				<td width="104" class="ct_write">»óÇ°¸í <imgsrc
 						="/images/ct_icon_red.gif" width="3" height="3" align="absmiddle"></td>
 				<td bgcolor="D6D6D6" width="1"></td>
 				<td class="ct_write01">
@@ -126,7 +126,7 @@
 				<td height="1" colspan="3" bgcolor="D6D6D6"></td>
 			</tr>
 			<tr>
-				<td width="104" class="ct_write">ìƒí’ˆìƒì„¸ì •ë³´ <img
+				<td width="104" class="ct_write">»óÇ°»ó¼¼Á¤º¸ <img
 					src="/images/ct_icon_red.gif" width="3" height="3"
 					align="absmiddle" />
 				</td>
@@ -139,7 +139,7 @@
 				<td height="1" colspan="3" bgcolor="D6D6D6"></td>
 			</tr>
 			<tr>
-				<td width="104" class="ct_write">ì œì¡°ì¼ì <img
+				<td width="104" class="ct_write">Á¦Á¶ÀÏÀÚ <img
 					src="/images/ct_icon_red.gif" width="3" height="3"
 					align="absmiddle" />
 				</td>
@@ -155,33 +155,33 @@
 				<td height="1" colspan="3" bgcolor="D6D6D6"></td>
 			</tr>
 			<tr>
-				<td width="104" class="ct_write">ê°€ê²© <img
+				<td width="104" class="ct_write">°¡°İ <img
 					src="/images/ct_icon_red.gif" width="3" height="3"
 					align="absmiddle" />
 				</td>
 				<td bgcolor="D6D6D6" width="1"></td>
 				<td class="ct_write01"><input type="text" name="price"
 					class="ct_input_g" style="width: 100px; height: 19px"
-					maxLength="10">&nbsp;ì›</td>
+					maxLength="10">&nbsp;¿ø</td>
 			</tr>
 			<tr>
 				<td height="1" colspan="3" bgcolor="D6D6D6"></td>
 			</tr>
 			<tr>
-				<td width="104" class="ct_write">ìˆ˜ëŸ‰ <img
+				<td width="104" class="ct_write">¼ö·® <img
 					src="/images/ct_icon_red.gif" width="3" height="3"
 					align="absmiddle" />
 				</td>
 				<td bgcolor="D6D6D6" width="1"></td>
 				<td class="ct_write01"><input type="text" name='prodCount' 
 					 class="ct_input_g" style="width: 100px; height: 19px"
-					maxLength="10" value="1">&nbsp;ê°œ</td>
+					maxLength="10" value="1">&nbsp;°³</td>
 			</tr>
 			<tr>
 				<td height="1" colspan="3" bgcolor="D6D6D6"></td>
 			</tr>
 			<tr>
-				<td width="104" class="ct_write">ìƒí’ˆì´ë¯¸ì§€</td>
+				<td width="104" class="ct_write">»óÇ°ÀÌ¹ÌÁö</td>
 				<td bgcolor="D6D6D6" width="1"></td>
 				<td class="ct_write01"><input type="file" name="fileName"
 					class="ct_input_g" style="width: 200px; height: 19px"
@@ -202,14 +202,14 @@
 							<td width="17" height="23"><img src="/images/ct_btnbg01.gif"
 								width="17" height="23" /></td>
 							<td background="/images/ct_btnbg02.gif" class="ct_btn01"
-								style="padding-top: 3px;">ë“±ë¡</td>
+								style="padding-top: 3px;">µî·Ï</td>
 							<td width="14" height="23"><img src="/images/ct_btnbg03.gif"
 								width="14" height="23" /></td>
 							<td width="30"></td>
 							<td width="17" height="23"><img src="/images/ct_btnbg01.gif"
 								width="17" height="23" /></td>
 							<td background="/images/ct_btnbg02.gif" class="ct_btn01"
-								style="padding-top: 3px;">ì·¨ì†Œ
+								style="padding-top: 3px;">Ãë¼Ò
 							</td>
 							<td width="14" height="23"><img src="/images/ct_btnbg03.gif"
 								width="14" height="23" /></td>

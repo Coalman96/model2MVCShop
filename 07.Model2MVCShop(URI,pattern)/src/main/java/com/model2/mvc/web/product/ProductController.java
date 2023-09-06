@@ -73,12 +73,12 @@ public class ProductController {
 
 	    // 23.09.05 파일 업로드 부분
 	    if (FileUpload.isMultipartContent(request)) {
-	        //String temDir =
-	          //  "C:\\workspace\\07.Model2MVCShop(URI,pattern)\\src\\main\\webapp\\images\\uploadFiles\\";
-	        String temDir2= "/uploadFiles/";
+	        String temDir =
+	          "C:\\workspace\\07.Model2MVCShop(URI,pattern)2\\src\\main\\webapp\\images\\uploadFiles";
+	        //String temDir2= "/uploadFiles/";
 	        
 	        DiskFileUpload fileUpload = new DiskFileUpload();
-	        fileUpload.setRepositoryPath(temDir2);
+	        fileUpload.setRepositoryPath(temDir);
 	        // setSize Threshold의 크기를 벗어나게 되면 지정한 위치에 임시로 저장한다.
 	        fileUpload.setSizeMax(1024 * 1024 * 10);
 	        // 최대 1메가까지 업로드 가능 (1024 * 1024 * 100) <- 100MB
@@ -114,7 +114,7 @@ public class ProductController {
 	                        String fileName = fileItem.getName().substring(idx + 1);
 	                        product.setFileName(fileName);
 	                        try {
-	                            File uploadedFile = new File(temDir2, fileName);
+	                            File uploadedFile = new File(temDir, fileName);
 	                            fileItem.write(uploadedFile);
 	                        } catch (IOException e) {
 	                            System.out.println(e);
