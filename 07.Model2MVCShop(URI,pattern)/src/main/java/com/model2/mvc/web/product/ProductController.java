@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.model2.mvc.common.Page;
@@ -69,16 +70,20 @@ public class ProductController {
 	*/
 	
 	@RequestMapping(value="addProduct", method=RequestMethod.POST)
-	public ModelAndView addProduct(@ModelAttribute("product") Product product, HttpServletRequest request) throws Exception {
+	public ModelAndView addProduct(@ModelAttribute("product") Product product, 
+									@RequestParam("fileName") MultipartFile[] files,
+										HttpServletRequest request) throws Exception {
 
 	    // 23.09.05 파일 업로드 부분
+		/*
 	    if (FileUpload.isMultipartContent(request)) {
-	        String temDir =
-	          "C:\\workspace\\07.Model2MVCShop(URI,pattern)2\\src\\main\\webapp\\images\\uploadFiles";
-	        //String temDir2= "/uploadFiles/";
+	        //String temDir =
+	          //"C:\\workspace\\07.Model2MVCShop(URI,pattern)\\src\\main\\webapp\\images\\uploadFiles";
+	       //String temDir2= "/images/uploadFiles/";
+	    	String temDir2= request.getServletContext().getRealPath("/images/uploadFiles/");
 	        
 	        DiskFileUpload fileUpload = new DiskFileUpload();
-	        fileUpload.setRepositoryPath(temDir);
+	        fileUpload.setRepositoryPath(temDir2);
 	        // setSize Threshold의 크기를 벗어나게 되면 지정한 위치에 임시로 저장한다.
 	        fileUpload.setSizeMax(1024 * 1024 * 10);
 	        // 최대 1메가까지 업로드 가능 (1024 * 1024 * 100) <- 100MB
@@ -114,8 +119,9 @@ public class ProductController {
 	                        String fileName = fileItem.getName().substring(idx + 1);
 	                        product.setFileName(fileName);
 	                        try {
-	                            File uploadedFile = new File(temDir, fileName);
+	                            File uploadedFile = new File(temDir2, fileName);
 	                            fileItem.write(uploadedFile);
+	                           
 	                        } catch (IOException e) {
 	                            System.out.println(e);
 	                        }
@@ -135,9 +141,33 @@ public class ProductController {
 	    } else {
 	        System.out.println("인코딩 타입이 multipart/form-data가 아닙니다..");
 	    }
+	    */
+		
+		//23.09.07 스프링프레임워크 파일업로드 적용
 	    
+		for (MultipartFile file : files) {
+	        if (!file.isEmpty()) {
+	            String originalFileName = file.getOriginalFilename();
+	            String uploadPath = request.getServletContext().getRealPath("/images/uploadFiles/");
+
+	            File uploadDir = new File(uploadPath);
+	            if (!uploadDir.exists()) {
+	                uploadDir.mkdirs(); // 디렉토리가 존재하지 않으면 생성
+	            }
+
+	            try {
+	                String uploadedFilePath = uploadPath + File.separator + originalFileName;
+	                file.transferTo(new File(uploadedFilePath));
+	                product.setFileName(originalFileName);
+	            } catch (IOException e) {
+	                e.printStackTrace();
+	                // 파일 업로드 중 오류 발생 시 예외 처리
+	            }
+	        }
+	    }
 
 	    System.out.println("/product/addProduct");
+	    System.out.println("아씨발");
 	    product.setManuDate(product.getManuDate().replace("-", ""));
 	    
 	    // Business Logic

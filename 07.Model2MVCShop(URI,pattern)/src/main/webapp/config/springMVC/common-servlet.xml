@@ -64,7 +64,8 @@
     <bean id="viewResolver"
 				class="org.springframework.web.servlet.view.InternalResourceViewResolver" />
 	
-	
+	<!-- applicationContext.xml (XML 설정 파일 사용 시) -->
+<bean id="multipartResolver" class="org.springframework.web.multipart.support.StandardServletMultipartResolver" />
 	<!-- ////////////////////////////////////////// 추가 ,  변경된 부분 ////////////////////////////////////////////////// -->
 	<!--	
 		■ / 형식의 Mapping 은 모든(정적,동적 자원) 요청시 처리책임

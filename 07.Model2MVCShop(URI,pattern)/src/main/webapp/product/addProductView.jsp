@@ -49,7 +49,7 @@
 		$('form[name="detailForm"]').attr("method", "POST").attr("action",
 				//json
 				//"/product/json/addProduct").attr("enctype","multipart/form-data").submit()
-				"/product/addProduct").submit()
+				"/product/addProduct").attr("enctype","multipart/form-data").submit()
 
 	}
 
@@ -82,7 +82,7 @@
 
 <body bgcolor="#ffffff" text="#000000">
 
-	<form name="detailForm" enctype="multipart/form-data">
+	<form name="detailForm">
 
 		<table width="100%" height="37" border="0" cellpadding="0"
 			cellspacing="0">
