@@ -2,6 +2,7 @@ package com.model2.mvc.web.product;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -71,7 +72,7 @@ public class ProductController {
 	
 	@RequestMapping(value="addProduct", method=RequestMethod.POST)
 	public ModelAndView addProduct(@ModelAttribute("product") Product product, 
-									@RequestParam("fileName") MultipartFile[] files,
+									@RequestParam("file") MultipartFile[] files,
 										HttpServletRequest request) throws Exception {
 
 	    // 23.09.05 파일 업로드 부분
@@ -144,7 +145,8 @@ public class ProductController {
 	    */
 		
 		//23.09.07 스프링프레임워크 파일업로드 적용
-	    
+	    //domain의 field name과 input의 name이 같을경우 400error 발생
+		List<String> fileNames = new ArrayList<>();
 		for (MultipartFile file : files) {
 	        if (!file.isEmpty()) {
 	            String originalFileName = file.getOriginalFilename();
@@ -158,16 +160,18 @@ public class ProductController {
 	            try {
 	                String uploadedFilePath = uploadPath + File.separator + originalFileName;
 	                file.transferTo(new File(uploadedFilePath));
-	                product.setFileName(originalFileName);
+	                // 파일 이름을 리스트에 추가
+	                fileNames.add(originalFileName);
+	                product.setFileName(fileNames.toString().replace("[", "").replace("]", ""));
 	            } catch (IOException e) {
 	                e.printStackTrace();
 	                // 파일 업로드 중 오류 발생 시 예외 처리
 	            }
 	        }
 	    }
-
+		
 	    System.out.println("/product/addProduct");
-	    System.out.println("아씨발");
+
 	    product.setManuDate(product.getManuDate().replace("-", ""));
 	    
 	    // Business Logic
@@ -253,17 +257,65 @@ public class ProductController {
 	*/
 	
 	@RequestMapping(value = "updateProduct", method = RequestMethod.POST)
-	public ModelAndView updateProduct(@ModelAttribute("product") Product product, HttpSession session) throws Exception {
-	   
-		System.out.println("/updateProduct");
-	    
+	public ModelAndView updateProduct(@ModelAttribute("product") Product product,
+	        @RequestParam(value = "file", required = false) MultipartFile[] files, HttpServletRequest request) throws Exception {
+
+	    System.out.println("/updateProduct");
+
+	    // 23.09.07 스프링프레임워크 파일업로드 적용
+	    // domain의 field name과 input의 name이 같을 경우 400 error 발생
+	    List<String> fileNames = new ArrayList<>();
+
+	    // 기존 파일 이름 유지
+	    String existingFileName = product.getFileName();
+	    System.out.println("기존파일이름"+existingFileName);
+
+	    if (files != null) {
+	        for (MultipartFile file : files) {
+	            if (!file.isEmpty()) {
+	                String originalFileName = file.getOriginalFilename();
+	                String uploadPath = request.getServletContext().getRealPath("/images/uploadFiles/");
+
+	                File uploadDir = new File(uploadPath);
+	                if (!uploadDir.exists()) {
+	                    uploadDir.mkdirs(); // 디렉토리가 존재하지 않으면 생성
+	                }
+
+	                try {
+	                    String uploadedFilePath = uploadPath + File.separator + originalFileName;
+	                    file.transferTo(new File(uploadedFilePath));
+
+	                    // 파일을 선택한 경우에만 새로운 파일 이름을 추가
+	                    fileNames.add(originalFileName);
+	                } catch (IOException e) {
+	                    e.printStackTrace();
+	                    // 파일 업로드 중 오류 발생 시 예외 처리
+	                }
+	            }
+	        }
+	    }
+
+	    // 파일을 선택하지 않았을 때, 기존 파일 이름 유지
+	    if (fileNames.isEmpty()) {
+	        // 이 부분에서 파일을 선택하지 않았을 때 기존 파일 이름을 설정합니다.
+	        if (existingFileName != null && !existingFileName.isEmpty()) {
+	            fileNames.add(existingFileName);
+	        }
+	    }
+
+	    // 파일 이름 설정
+	    product.setFileName(fileNames.toString().replace("[", "").replace("]", ""));
+
+	    product.setManuDate(product.getManuDate().replace("-", ""));
+
 	    // Business Logic
 	    productService.updateProduct(product);
-	    
+
 	    // ModelAndView 생성 및 리다이렉트 설정
 	    ModelAndView modelAndView = new ModelAndView();
-	    modelAndView.setViewName("redirect:/product/getProduct?prodNo=" + product.getProdNo());
-	    
+	    modelAndView.setViewName("forward:/product/readProduct.jsp");
+	    modelAndView.addObject("product", product);
+
 	    return modelAndView;
 	}
 	

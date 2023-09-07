@@ -95,11 +95,14 @@
 	</tr>
 	<tr>
 		<td width="104" class="ct_write">
-			상품이미지 <img 	src="/images/ct_icon_red.gif" width="3" height="3" align="absmiddle"/>
+			상품이미지 <img 	src="/images/ct_icon_red.gif" width="3" height="3" align="middle"/>
 		</td>
 		<td bgcolor="D6D6D6" width="1"></td>
 		<td class="ct_write01">
-			<img src = "/images/uploadFiles/${product.fileName}" width="200px" height="200px"/>
+    <c:forEach var="fileName" items="${product.fileName}">
+    <img src="/images/uploadFiles/${fileName.trim()}" width="200px" height="200px" />
+</c:forEach>
+
 		</td>
 	</tr>
 	<tr>

@@ -139,9 +139,12 @@
 			<tr>
 				<td width="104" class="ct_write">상품이미지</td>
 				<td bgcolor="D6D6D6" width="1"></td>
-				<td class="ct_write01"><input type="file" name="fileName"
+				<td class="ct_write01"><input type="file" name="file"
 					class="ct_input_g" style="width: 200px; height: 19px"
 					maxLength="13" value="${product.fileName}" /></td>
+					    <c:forEach var="fileName" items="${product.fileName}">
+    <img src="/images/uploadFiles/${fileName.trim()}" width="200px" height="200px" />
+</c:forEach>
 			</tr>
 			<tr>
 				<td height="1" colspan="3" bgcolor="D6D6D6"></td>
