@@ -100,7 +100,7 @@ public class UserRestController {
 		return map;
 	}
 	
-	@RequestMapping( value="json/listUser", method=RequestMethod.GET )
+	@RequestMapping( value="json/listUser", method=RequestMethod.POST )
 	public Map<String , Object> listUser( @RequestBody Search search) throws Exception{
 		
 		System.out.println("/user/json/listUser : GET / POST");
@@ -108,6 +108,7 @@ public class UserRestController {
 		if(search.getCurrentPage() ==0 ){
 			search.setCurrentPage(1);
 		}
+		search.setCurrentPage(search.getCurrentPage()+1);
 		search.setPageSize(pageSize);
 		
 		// Business logic ผ๖วเ
