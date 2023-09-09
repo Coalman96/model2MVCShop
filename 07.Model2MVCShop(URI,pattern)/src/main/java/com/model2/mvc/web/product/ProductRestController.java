@@ -30,6 +30,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.model2.mvc.common.Page;
 import com.model2.mvc.common.Search;
 import com.model2.mvc.service.domain.Product;
+import com.model2.mvc.service.domain.User;
 import com.model2.mvc.service.product.ProductService;
 
 
@@ -99,6 +100,53 @@ public class ProductRestController {
 	    
 	    return product;
 	}
+	
+	@RequestMapping(value = "json/listProduct", method=RequestMethod.POST)
+	public Map<String , Object> listProduct(@RequestBody Search search) throws Exception {
+	    
+		System.out.println("json/listProduct");
+	   
+		if(search.getCurrentPage() ==0 ){
+			search.setCurrentPage(1);
+		}else {
+			
+			search.setCurrentPage(search.getCurrentPage()+1);
+			
+		}
+		
+	    search.setPageSize(pageSize);
+	    
+	    // Business logic 수행
+	    Map<String, Object> map = productService.getProductList(search);
+	    
+	    Page resultPage = new Page(search.getCurrentPage(), ((Integer) map.get("totalCount")).intValue(), pageUnit, pageSize);
+	    System.out.println(resultPage);
+	    
+	    // AutoComplete추가 코드
+		 List<String> resultList = new ArrayList<>();
+		 List<Product> productList = (List<Product>) map.get("list");
+		
+		for (Product product : productList) {
+			 if ("0".equals(search.getSearchCondition())) {
+		            // searchCondition이 0인 경우 userId를 리스트에 추가
+		            resultList.add(""+product.getProdNo());
+		        } else if ("1".equals(search.getSearchCondition())) {
+		            // searchCondition이 1인 경우 userName을 리스트에 추가
+		            resultList.add(product.getProdName());
+		        } else if ("2".equals(search.getSearchCondition())) {
+		            // searchCondition이 1인 경우 userName을 리스트에 추가
+		            resultList.add(""+product.getPrice());
+		        }
+	        // 다른 조건에 따라 추가 작업 수행 가능
+	    }
 
+	    map.put("resultList", resultList);
+	    // 추가 코드 끝
+	    map.put("list", map.get("list"));
+	    map.put("resultPage", resultPage);
+	    map.put("search", search);
+	    
+	    return map;
+	}
 	
 }

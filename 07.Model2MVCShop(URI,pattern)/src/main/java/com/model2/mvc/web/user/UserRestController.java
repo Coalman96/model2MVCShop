@@ -122,7 +122,8 @@ public class UserRestController {
 		
 		Page resultPage = new Page( search.getCurrentPage(), ((Integer)map.get("totalCount")).intValue(), pageUnit, pageSize);
 		System.out.println(resultPage);
-
+		
+		// AutoComplete추가 코드
 		 List<String> resultList = new ArrayList<>();
 		 List<User> userList = (List<User>) map.get("list");
 		
@@ -136,7 +137,7 @@ public class UserRestController {
 		        }
 	        // 다른 조건에 따라 추가 작업 수행 가능
 	    }
-		System.out.println("하 시발"+resultList);
+
 	    map.put("resultList", resultList);
 	    // 추가 코드 끝
 		map.put("list", map.get("list"));

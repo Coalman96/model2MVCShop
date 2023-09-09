@@ -11,7 +11,7 @@
 <title>회원 목록 조회</title>
 
 <link rel="stylesheet" href="/css/admin.css" type="text/css">
-
+<!-- jQuery UI CDN(Content Delivery Network) 호스트 사용 -->
 <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
 <!-- CDN(Content Delivery Network) 호스트 사용 -->
 <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
@@ -26,33 +26,42 @@
 		}
 		
 
-		
-		
+	
 		//let currentPage = 
 		
 		//==>"검색" ,  userId link  Event 연결 및 처리
 		 $(function() {
+			
+			    if($(window).height() == $(document).height()){
+			    	
+			    	loadMoreData()
+			    	
+			    }
+			 
 			 
 				// 현재 페이지 번호와 무한 스크롤 활성화 여부를 저장하는 변수
-				var currentPage = 1;
-				var infiniteScrollEnabled = true;
+				let currentPage = 1;
+				let infiniteScrollEnabled = true;
 
 				// 스크롤 이벤트 핸들러
 				$(window).scroll(function() {
 				    // 스크롤바 위치
-				    var scrollHeight = $(document).height();
-				    var scrollPosition = $(window).height() + $(window).scrollTop();
+				    let scrollHeight = $(document).height();
+				    let scrollPosition = $(window).height() + $(window).scrollTop();
 
+				    console.log("현재 scrollHeight : "+scrollHeight)
+				    console.log("현재 scrollPosition : "+scrollPosition)
+				    console.log("현재 windowHeight : "+$(window).height())
+				    
+				    
 				    // 무한 스크롤 활성화 상태에서 스크롤이 일정 위치에 도달하면 데이터를 가져옵니다.
 				    if (infiniteScrollEnabled && (scrollHeight - scrollPosition) / scrollHeight === 0) {
 				        infiniteScrollEnabled = false; // 중복 요청을 막기 위해 활성화 상태를 비활성화로 변경
 				        loadMoreData();
 				    }
 				});	 
-			 
 		 
 			 function loadMoreData() {
-			 //$(document).on('click','#sex',function(){
 				 let searchConditionValue = $('select[name="searchCondition"]').val();
 				 let searchKeywordValue = $('input[name="searchKeyword"]').val();
 				 let currentPageValue = parseInt($('input[name="currentPage"]').val()); // 현재 값 가져오기
@@ -68,13 +77,13 @@
 				      dataType: "json",
 				      success: function(data,status) {
 				        // 성공적으로 데이터를 받아왔을 때, 데이터를 화면에 추가합니다.
-				        var userList = data.list;
-				        var resultPage = data.resultPage;
-				        var i = (resultPage.currentPage - 1) * resultPage.pageSize;
+				        let userList = data.list;
+				        let resultPage = data.resultPage;
+				        let i = (resultPage.currentPage - 1) * resultPage.pageSize;
 						console.log(searchConditionValue)
 						userList.forEach(function(user) {
 							  i++;
-							  var row = "<tr class='ct_list_pop'>"
+							  let row = "<tr class='ct_list_pop'>"
 											+"<td align='center'height='80px'>"+i+"</td>"
 											+"<td></td>"
 											+"<td align='left'>"+user.userId+"</td>"
@@ -94,11 +103,7 @@
 								//==> 아래와 같이 정의한 이유는 ??
 								$(".ct_list_pop:nth-child(4n+6)" ).css("background-color" , "whitesmoke");
 							}); 
-						
-						if (userList.length === 0) {
-			                $("#sex").hide();
-			            }
-						
+	
 						infiniteScrollEnabled = true;
 				 }//end of success
 				 
@@ -106,16 +111,7 @@
 			 })//end of ajax
 
 			 }
-			//==> 검색 Event 연결처리부분
-			//==> DOM Object GET 3가지 방법 ==> 1. $(tagName) : 2.(#id) : 3.$(.className)
-			//==> 1 과 3 방법 조합 : $("tagName.className:filter함수") 사용함. 
-			 $( "td.ct_btn01:contains('검색')" ).on("click" , function() {
-				//Debug..
-				//alert(  $( "td.ct_btn01:contains('검색')" ).html() );
-				fncGetUserList(1);
-			});
-			
-			
+		
 			//==> userId LINK Event 연결처리
 			//==> DOM Object GET 3가지 방법 ==> 1. $(tagName) : 2.(#id) : 3.$(.className)
 			//==> 3 과 1 방법 조합 : $(".className tagName:filter함수") 사용함.
@@ -159,16 +155,10 @@
 					
 			});
 			
-			//==> userId LINK Event End User 에게 보일수 있도록 
-			$( ".ct_list_pop td:nth-child(3)" ).css("color" , "red");
-			$("h7").css("color" , "red");
-			
-			//==> 아래와 같이 정의한 이유는 ??
-			$(".ct_list_pop:nth-child(4n+6)" ).css("background-color" , "whitesmoke");
-			
+			//==> Autocomplete
 			$('input[name="searchKeyword"]').autocomplete({
 			    source: function(request, response) {
-			        var searchConditionValue = $('select[name="searchCondition"]').val();
+			        const searchConditionValue = $('select[name="searchCondition"]').val();
 			        $.ajax({
 			            url: "/user/json/listUser",
 			            data: JSON.stringify({ 
@@ -180,10 +170,10 @@
 			            contentType: "application/json",
 			            dataType: "json",
 			            success: function (data) {
-			            	let resultList = data.resultList; // resultList를 서버 응답에서 추출
+			            	const resultList = data.resultList; // resultList를 서버 응답에서 추출
 
 			                // 중복 제거 로직 추가
-			                var uniqueResults = [];
+			                const uniqueResults = [];
 			                $.each(resultList, function(index, item) {
 			                	//inArray사용으로 중복값제거
 			                    if ($.inArray(item, uniqueResults) === -1) {
@@ -197,6 +187,23 @@
 			        });
 			    }
 			});
+			
+			//==> userId LINK Event End User 에게 보일수 있도록 
+			$( ".ct_list_pop td:nth-child(3)" ).css("color" , "red");
+			$("h7").css("color" , "red");
+			
+			//==> 아래와 같이 정의한 이유는 ??
+			$(".ct_list_pop:nth-child(4n+6)" ).css("background-color" , "whitesmoke");
+			
+			//==> 검색 Event 연결처리부분
+			//==> DOM Object GET 3가지 방법 ==> 1. $(tagName) : 2.(#id) : 3.$(.className)
+			//==> 1 과 3 방법 조합 : $("tagName.className:filter함수") 사용함. 
+			 $( "td.ct_btn01:contains('검색')" ).on("click" , function() {
+				//Debug..
+				//alert(  $( "td.ct_btn01:contains('검색')" ).html() );
+				fncGetUserList(1);
+			});
+			
 		});
 		
 	</script>
@@ -258,8 +265,7 @@
 			<table width="100%" border="0" cellspacing="0" cellpadding="0"
 				style="margin-top: 10px;">
 				<tr>
-					<td colspan="11">전체 ${resultPage.totalCount } 건수, 현재
-						${resultPage.currentPage} 페이지</td>
+					<td colspan="11">전체 ${resultPage.totalCount } 건수</td>
 				</tr>
 				<tr>
 					<td class="ct_list_b" width="100">No</td>
@@ -297,7 +303,6 @@
 
 				</c:forEach>
 			</table>
-			
 		</form>
 	</div>
 
