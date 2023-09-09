@@ -346,7 +346,7 @@ public class ProductController {
 	*/
 	
 	@RequestMapping(value = "listProduct")
-	public ModelAndView listProduct(@ModelAttribute("search") Search search, HttpServletRequest request) throws Exception {
+	public ModelAndView listProduct(@ModelAttribute("search") Search search) throws Exception {
 	    System.out.println("/listProduct");
 	    System.out.println("현재페이지 수 :::::" + search.getCurrentPage());
 	    if (search.getCurrentPage() == 0) {

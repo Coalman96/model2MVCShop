@@ -3,58 +3,161 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
-<%-- /////////////////////// EL / JSTL 적용으로 주석 처리 ////////////////////////
-<%@ page import="java.util.*"  %>
-<%@page import="com.model2.mvc.common.util.*"%>
-<%@ page import="com.model2.mvc.common.Search" %>
-<%@page import="com.model2.mvc.common.Page"%>
-<%@page import="com.model2.mvc.common.util.CommonUtil"%>
-<%@ page import="com.model2.mvc.service.domain.*" %>
 
-<%
-	List<Product> list=(List<Product>)request.getAttribute("list");
-	Page resultPage=(Page)request.getAttribute("resultPage");
-	
-	Search search = (Search)request.getAttribute("search");
-	
-	String searchCondition = CommonUtil.null2str(search.getSearchCondition());
-%>
-/////////////////////// EL / JSTL 적용으로 주석 처리 ////////////////////////--%>
 <html>
 <head>
 <title>상품 목록조회</title>
 
 <link rel="stylesheet" href="/css/admin.css" type="text/css">
+<!-- jQuery UI CDN(Content Delivery Network) 호스트 사용 -->
+<link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
 <!-- CDN(Content Delivery Network) 호스트 사용 -->
 <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
 <script type="text/javascript">
+	function fncGetProductList(currentPage) {
+		
+		if (currentPage == undefined) {
+			currentPage = 1;
+		}
 	
+		$('#currentPage').val(currentPage)
+	
+		$('form').attr("method", "POST").attr("action",
+		"/product/listProduct?menu=${param.menu}").submit()
+	
+	}
 
 	
 	$(function () {
-
-		$('td.ct_btn01:contains("검색")').on('click',function(){
-			
-			fncGetProductList(1)
-			
-		})
-
 		
-	$(".ct_list_pop td:nth-child(3)").css("color" , "red");
-							
+	    if($(window).height() == $(document).height()){
+	    	
+	    	loadMoreData()
+	    	
+	    }	
+	// 현재 페이지 번호와 무한 스크롤 활성화 여부를 저장하는 변수
+	let currentPage = 1;
+	let infiniteScrollEnabled = true;
+	
+	
+	
+	// 스크롤 이벤트 핸들러
+	$(window).scroll(function() {
+	    // 스크롤바 위치
+	    let scrollHeight = $(document).height();
+	    let scrollPosition = $(window).height() + $(window).scrollTop();
+
+	    console.log("현재 scrollHeight : "+scrollHeight)
+	    console.log("현재 scrollPosition : "+scrollPosition)
+	    console.log("현재 windowHeight : "+$(window).height())
+	    
+	    
+	    // 무한 스크롤 활성화 상태에서 스크롤이 일정 위치에 도달하면 데이터를 가져옵니다.
+	    if (infiniteScrollEnabled && (scrollHeight - scrollPosition) / scrollHeight === 0) {
+	        infiniteScrollEnabled = false; // 중복 요청을 막기 위해 활성화 상태를 비활성화로 변경
+	        loadMoreData();
+	    }
+	});	 
+	
+	 function loadMoreData() {
+		 let searchConditionValue = $('select[name="searchCondition"]').val();
+		 let searchKeywordValue = $('input[name="searchKeyword"]').val();
+		 let currentPageValue = parseInt($('input[name="currentPage"]').val()); // 현재 값 가져오기
+		 	
+		 
+		 
+		 currentPageValue++; // 1 증가
+		    
+		    $('input[name="currentPage"]').val(currentPageValue); // 업데이트된 값 설정
+		    
+		    // 서버에 요청을 보내서 데이터를 가져옴.
+		    $.ajax({
+		      url: "/product/json/listProduct",
+		      data: JSON.stringify({ currentPage: currentPageValue,searchKeyword:searchKeywordValue,searchCondition:searchConditionValue }), // 현재 페이지 정보를 서버에 전달
+		      method:"POST",
+		      contentType: "application/json",
+		      dataType: "json",
+		      success: function(data,status) {
+		        // 성공적으로 데이터를 받아왔을 때, 데이터를 화면에 추가.
+		        let prodList = data.list;
+		        let resultPage = data.resultPage;
+		        let i = (resultPage.currentPage - 1) * resultPage.pageSize;
+				console.log(searchConditionValue)
+				prodList.forEach(function(product) {
+					  i++;
+					  let row = "<tr class='ct_list_pop'>"
+									+"<td align='center'height='80px'>"+i+"</td>"
+									+"<td></td>"
+									+"<td align='left'>"+product.prodName+"</td>"
+									+"<td></td>"
+									+"<td align='left'>"+product.price+"</td>"
+									+"<td></td>"
+									+"<td align='left'>"+product.manuDate+"</td>"
+								+"</tr>";
+	
+					  $("table").eq(4).append(row);
+					  $( ".ct_list_pop td:nth-child(3)" ).css("color" , "red");
+						$("h7").css("color" , "red");
+						
+						//==> 아래와 같이 정의한 이유는 ??
+						$(".ct_list_pop:nth-child(4n+6)" ).css("background-color" , "whitesmoke");
+					}); 
+					
+				infiniteScrollEnabled = true;
+		 }//end of success
+		
+	 })//end of ajax
+	
+	}//end of loadMoreData
+	//==> Autocomplete
+	$('input[name="searchKeyword"]').autocomplete({
+	    source: function(request, response) {
+	    	let searchConditionValue = $('select[name="searchCondition"]').val();
+	        $.ajax({
+	            url: "/product/json/listProduct",
+	            data: JSON.stringify({ 
+	            	currentPage:0,
+	                searchKeyword: request.term, // 현재 입력된 검색어
+	                searchCondition: searchConditionValue
+	            }),
+	            method: "POST",
+	            contentType: "application/json",
+	            dataType: "json",
+	            success: function (data) {
+	            	let resultList = data.resultList; // resultList를 서버 응답에서 추출
+
+	                // 중복 제거 로직 추가
+	                let uniqueResults = [];
+	                $.each(resultList, function(index, item) {
+	                	//inArray사용으로 중복값제거
+	                    if ($.inArray(item, uniqueResults) === -1) {
+	                        uniqueResults.push(item);
+	                    }
+	                });
+
+	                response(uniqueResults); // 중복이 제거된 결과를 자동완성에 사용
+	                console.log(data);
+	            }//end of success
+	        });//end of ajax
+	    }
+	});//end of Autocomplete
+	
+	
+	$(".ct_list_pop td:nth-child(3) a").css("color" , "red");
+	
 	$(".ct_list_pop:nth-child(even)").css("background-color" , "whitesmoke");
 
+	$("h7").css("color" , "red");
+	
+	$('td.ct_btn01:contains("검색")').on('click',function(){
+		
+		fncGetProductList(1)
+		
 	})
 	
-	function fncGetProductList(currentPage) {
-	if (currentPage == undefined) {
-		currentPage = 1;
-	}
-	$('#currentPage').val(currentPage)
-
-	$('form').attr("method", "POST").attr("action",
-	"/product/listProduct?menu=${param.menu}").submit()
-}
+	
+})//end of jQuery
 </script>
 </head>
 
@@ -63,7 +166,7 @@
 <div style="width:98%; margin-left:10px;">
 
 <form name="detailForm" >
-
+<input type="hidden" name="currentPage" value="0" />
 <table width="100%" height="37" border="0" cellpadding="0"	cellspacing="0">
 	<tr>
 		<td width="15" height="37">
@@ -73,13 +176,6 @@
 			<table width="100%" border="0" cellspacing="0" cellpadding="0">
 				<tr>
 					<td width="93%" class="ct_ttl01">
-					<%-- /////////////////////// EL / JSTL 적용으로 주석 처리 ////////////////////////
-					<%if(request.getParameter("menu").equals("manage")) {%>
-						상품관리
-					<%}else{ %>
-						상품목록조회
-					<%} %>
-					/////////////////////// EL / JSTL 적용으로 주석 처리 //////////////////////// --%>
 					${param.menu eq 'manage' ? "상품관리" : "상품목록조회"}
 					</td>
 				</tr>
@@ -125,15 +221,13 @@
 
 <table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top:10px;">
 	<tr>
-		<%-- 
-		<td colspan="11" >전체  <%= resultPage.getTotalCount() %> 건수,	현재 <%= resultPage.getCurrentPage() %> 페이지</td>
-		--%>
-		<td colspan="11" >전체  ${resultPage.totalCount} 건수,	현재 ${resultPage.currentPage} 페이지</td>
+		<td colspan="11" >전체  ${resultPage.totalCount} 건수</td>
 	</tr>
 	<tr>
 		<td class="ct_list_b" width="100">No</td>
 		<td class="ct_line02"></td>
-		<td class="ct_list_b" width="150">상품명</td>
+		<td class="ct_list_b" width="150">상품명<br>
+		${param.menu eq 'search' ? '<h7>(상품명 click:상세정보)</h7>' : '<h7>(상품명 click:수정)</h7>'}</td>
 		<td class="ct_line02"></td>
 		<td class="ct_list_b" width="150">가격</td>
 		<td class="ct_line02"></td>
@@ -145,38 +239,11 @@
 	<tr>
 		<td colspan="11" bgcolor="808285" height="1"></td>
 	</tr>
-	<%-- /////////////////////// EL / JSTL 적용으로 주석 처리 ////////////////////////
-	<% 	
-		int no=list.size();
-		for(int i=0; i<list.size(); i++) {
-			Product vo = (Product)list.get(i);
-	%>
-	<tr class="ct_list_pop">
-		<td align="center"><%=vo.getRownum()%></td>
-		<td></td>
-		<td align="left">
-			<%if(request.getParameter("menu").equals("manage")) {%>
-			<a href="/updateProductView.do?prodNo=<%=Integer.toString(vo.getProdNo())%>"><%= vo.getProdName() %></a>
-			<%}else{ %>
-			<a href="/getProduct.do?prodNo=<%=Integer.toString(vo.getProdNo())%>"><%= vo.getProdName() %></a>
-			<%} %>
-		</td>
-		<td></td>
-		<td align="left"><%=vo.getPrice()%></td>
-		<td></td>
-		<td align="left"><%=vo.getRegDate()%></td>
-		<td></td>
-		<td align="left">
-		
-		</td>	
-	
-	</tr>
-	<% } %>/////////////////////// EL / JSTL 적용으로 주석 처리 //////////////////////// --%>
 	<c:set var="i" value="0"/>
 		<c:forEach var="product" items="${list}">
 			<c:set var="i" value="${i+1}"/>
 				<tr class="ct_list_pop">
-					<td align="center"><fmt:parseNumber var="page" value="${(((resultPage.currentPage - 1) / resultPage.pageUnit) * resultPage.pageUnit) * resultPage.pageSize + i}" integerOnly="true"/>${page}</td>
+					<td align="center" height="80px"><fmt:parseNumber var="page" value="${(((resultPage.currentPage - 1) / resultPage.pageUnit) * resultPage.pageUnit) * resultPage.pageSize + i}" integerOnly="true"/>${page}</td>
 					<td></td>
 					<td align="left">
 						<c:if test="${param.menu eq 'manage'}">
@@ -201,17 +268,6 @@
 		<td colspan="11" bgcolor="D6D7D6" height="1"></td>
 	</tr>	
 
-</table>
-
-<table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top:10px;">
-	<tr>
-		<td align="center">
-			<input type="hidden" id="currentPage" name="currentPage" value="0"/>
-			<jsp:include page="../common/pageNavigator.jsp">
-				<jsp:param name="file" value="Product" />
-			</jsp:include>	
-    	</td>
-	</tr>
 </table>
 
 <!--  페이지 Navigator 끝 -->

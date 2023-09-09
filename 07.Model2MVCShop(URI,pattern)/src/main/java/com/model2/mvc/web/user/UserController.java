@@ -357,9 +357,9 @@ public class UserController {
 		
 		System.out.println("/user/listUser : GET / POST");
 		
-		if(search.getCurrentPage() ==0 ){
+		//if(search.getCurrentPage() ==0 ){
 			search.setCurrentPage(1);
-		}
+		//}
 		search.setPageSize(pageSize);
 		
 		// Business logic ผ๖วเ

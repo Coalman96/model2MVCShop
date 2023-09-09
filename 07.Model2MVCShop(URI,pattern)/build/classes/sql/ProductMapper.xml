@@ -57,13 +57,13 @@
 											<if test="searchCondition != null">
 												<where>
 													<if test="searchCondition == 0 and searchKeyword !='' ">
-										 				AND PROD_NO = ${searchKeyword} ORDER BY prod_no
+										 				AND PROD_NO like '${searchKeyword}%'
 													</if>
 													<if test="searchCondition == 1 and searchKeyword !='' ">
-										 				AND PROD_NAME like '%${searchKeyword}%' ORDER BY prod_NAME
+										 				AND PROD_NAME like '${searchKeyword}%'
 													</if>
 													<if test="searchCondition == 2 and searchKeyword !='' ">
-										 				AND PRICE between ${searchKeyword} and ${searchKeyword}+9999 ORDER BY price
+										 				AND PRICE like '${searchKeyword}%'
 													</if>
 												</where>
 											</if>
@@ -90,13 +90,13 @@
 						<if test="searchCondition != null">
 							<where>
 								<if test="searchCondition == 0 and searchKeyword !='' ">
-					 				AND PROD_NO = ${searchKeyword} ORDER BY prod_no
+					 				AND PROD_NO like '${searchKeyword}%'
 								</if>
 								<if test="searchCondition == 1 and searchKeyword !='' ">
-					 				AND PROD_NAME like '%${searchKeyword}%' ORDER BY prod_NAME
+					 				AND PROD_NAME like '%${searchKeyword}%'
 								</if>
 								<if test="searchCondition == 2 and searchKeyword !='' ">
-					 				AND PRICE between ${searchKeyword} and ${searchKeyword}+9999 ORDER BY price
+					 				AND PRICE like '${searchKeyword}%'
 								</if>
 							</where>
 						</if> ) countTable						

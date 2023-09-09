@@ -1,6 +1,8 @@
 package com.model2.mvc.web.user;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -107,8 +109,12 @@ public class UserRestController {
 		
 		if(search.getCurrentPage() ==0 ){
 			search.setCurrentPage(1);
+		}else {
+			
+			search.setCurrentPage(search.getCurrentPage()+1);
+			
 		}
-		search.setCurrentPage(search.getCurrentPage()+1);
+
 		search.setPageSize(pageSize);
 		
 		// Business logic 수행
@@ -117,6 +123,23 @@ public class UserRestController {
 		Page resultPage = new Page( search.getCurrentPage(), ((Integer)map.get("totalCount")).intValue(), pageUnit, pageSize);
 		System.out.println(resultPage);
 		
+		// AutoComplete추가 코드
+		 List<String> resultList = new ArrayList<>();
+		 List<User> userList = (List<User>) map.get("list");
+		
+		for (User user : userList) {
+			 if ("0".equals(search.getSearchCondition())) {
+		            // searchCondition이 0인 경우 userId를 리스트에 추가
+		            resultList.add(user.getUserId());
+		        } else if ("1".equals(search.getSearchCondition())) {
+		            // searchCondition이 1인 경우 userName을 리스트에 추가
+		            resultList.add(user.getUserName());
+		        }
+	        // 다른 조건에 따라 추가 작업 수행 가능
+	    }
+
+	    map.put("resultList", resultList);
+	    // 추가 코드 끝
 		map.put("list", map.get("list"));
 		map.put("resultPage", resultPage);
 		map.put("search", search);
