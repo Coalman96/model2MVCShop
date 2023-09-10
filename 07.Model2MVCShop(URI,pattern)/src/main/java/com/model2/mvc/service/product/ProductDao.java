@@ -1,5 +1,6 @@
 package com.model2.mvc.service.product;
 
+
 import java.util.List;
 import java.util.Map;
 
@@ -24,7 +25,8 @@ public interface ProductDao {
 
 	public void updateProduct(Product product) throws Exception;
 
-
+	public void updateProductCount(Map<String, Object> purchase) throws Exception;
+	
 	public int getTotalCount(Search search) throws Exception;
 	
 }

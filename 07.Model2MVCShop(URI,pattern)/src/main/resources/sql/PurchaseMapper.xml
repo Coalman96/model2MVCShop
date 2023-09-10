@@ -7,42 +7,43 @@
 <mapper namespace="PurchaseMapper">
 
 	<resultMap id="purchaseSelectMap" type="purchase">
-	
-		<result property="tranNo" column="tran_no" jdbcType="NUMERIC"/>
-		<result property="paymentOption" column="payment_option" jdbcType="CHAR"/>
-		<result property="receiverName" column="receiver_name" jdbcType="VARCHAR"/>
-		<result property="receiverPhone" column="receiver_phone" jdbcType="VARCHAR"/>
-		<result property="divyAddr" column="DEMAILADDR" jdbcType="VARCHAR"/>
-		<result property="divyRequest" column="dlvy_request" jdbcType="VARCHAR"/>
-		<result property="tranCode" column="tran_status_code" jdbcType="CHAR"/>
-		<result property="orderDate" column="ORDER_DATA" jdbcType="DATE"/>
-		<result property="divyDate" column="dlvy_date" jdbcType="DATE"/>
-		
-		<association property="purchaseProd"  javaType="product">
-			<id property="prodNo" column="prod_no" jdbcType="NUMERIC"/>
-			<result property="prodName" column="prod_name" jdbcType="VARCHAR"/>
-			<result property="prodDetail" column="prod_detail" jdbcType="VARCHAR"/>
-			<result property="manuDate" column="manufacture_day" jdbcType="VARCHAR"/>
-			<result property="price" column="price" jdbcType="NUMERIC"/>
-			<result property="fileName" column="image_file" jdbcType="VARCHAR"/>
-			<result property="regDate" column="REG_DATE" jdbcType="DATE"/>
+
+		<result property="tranNo" column="tran_no" jdbcType="NUMERIC" />
+		<result property="paymentOption" column="payment_option" jdbcType="CHAR" />
+		<result property="receiverName" column="receiver_name" jdbcType="VARCHAR" />
+		<result property="receiverPhone" column="receiver_phone" jdbcType="VARCHAR" />
+		<result property="divyAddr" column="DEMAILADDR" jdbcType="VARCHAR" />
+		<result property="divyRequest" column="dlvy_request" jdbcType="VARCHAR" />
+		<result property="tranCode" column="tran_status_code" jdbcType="CHAR" />
+		<result property="orderDate" column="ORDER_DATA" jdbcType="DATE" />
+		<result property="divyDate" column="dlvy_date" jdbcType="VARCHAR" />
+		<result property="prodCount" column="prod_count" jdbcType="NUMERIC" />
+
+		<association property="purchaseProd" javaType="product">
+			<id property="prodNo" column="prod_no" jdbcType="NUMERIC" />
+			<result property="prodName" column="prod_name" jdbcType="VARCHAR" />
+			<result property="prodDetail" column="prod_detail" jdbcType="VARCHAR" />
+			<result property="manuDate" column="manufacture_day" jdbcType="VARCHAR" />
+			<result property="price" column="price" jdbcType="NUMERIC" />
+			<result property="fileName" column="image_file" jdbcType="VARCHAR" />
+			<result property="regDate" column="REG_DATE" jdbcType="DATE" />
 			<!-- <result property="prodTranCode" column="TRAN_STATUS_CODE" jdbcType="VARCHAR"/> -->
 		</association>
-		
-		<association property="buyer"  javaType="user">
-			<id property="userId" column="buyer_id" jdbcType="VARCHAR"/>
-			<result property="userName" column="user_name" jdbcType="VARCHAR"/>
-			<result property="password" column="password" jdbcType="VARCHAR"/>
-			<result property="role" column="role" jdbcType="VARCHAR"/>
-			<result property="ssn" column="ssn" jdbcType="VARCHAR"/>
-			<result property="phone" column="cell_phone" jdbcType="VARCHAR"/>
-			<result property="addr" column="addr" jdbcType="VARCHAR"/>
-			<result property="email" column="email" jdbcType="VARCHAR"/>
-			<result property="regDate" column="user_reg_date" jdbcType="DATE"/>
+
+		<association property="buyer" javaType="user">
+			<id property="userId" column="buyer_id" jdbcType="VARCHAR" />
+			<result property="userName" column="user_name" jdbcType="VARCHAR" />
+			<result property="password" column="password" jdbcType="VARCHAR" />
+			<result property="role" column="role" jdbcType="VARCHAR" />
+			<result property="ssn" column="ssn" jdbcType="VARCHAR" />
+			<result property="phone" column="cell_phone" jdbcType="VARCHAR" />
+			<result property="addr" column="addr" jdbcType="VARCHAR" />
+			<result property="email" column="email" jdbcType="VARCHAR" />
+			<result property="regDate" column="user_reg_date" jdbcType="DATE" />
 		</association>
 	</resultMap>
-	
-	<select id="findPurchase" parameterType="purchase" resultMap="purchaseSelectMap">
+
+	<select id="findPurchase" parameterType="int" resultMap="purchaseSelectMap">
 		select
 		t.TRAN_NO,
 		<!-- t.prod_no prodNo, -->
@@ -56,7 +57,8 @@
 		t.ORDER_DATA,
 		t.DLVY_DATE,
 		t.TRAN_STATUS_CODE,
-		
+		t.prod_count,
+
 		p.PROD_NO,
 		p.PROD_NAME,
 		p.PROD_DETAIL,
@@ -64,8 +66,8 @@
 		p.PRICE,
 		p.IMAGE_FILE,
 		p.REG_DATE,
-		
-		
+
+
 		u.USER_ID,
 		u.USER_NAME,
 		u.PASSWORD,
@@ -75,95 +77,159 @@
 		u.ADDR,
 		u.EMAIL,
 		u.REG_DATE
-				
+
 		from TRANSACTION t, PRODUCT p, USERS u
 		where t.prod_no = p.prod_no AND t.buyer_id = u.user_id
-		<if test="tranNo != null">AND t.TRAN_NO=#{tranNo}</if>
+		AND t.tran_no = #{tranNo}
 	</select>
-	
+
 	<select id="getPurchaseList" parameterType="map" resultMap="purchaseSelectMap">
-  		SELECT *
-  		FROM ( SELECT inner_table.*, ROWNUM AS row_seq
-  						FROM ( SELECT t.tran_no, p.prod_no, t.order_data, t.tran_status_code ,t.receiver_name, t.receiver_phone, t.buyer_id
-										FROM transaction t, product p, users u 
-										WHERE t.prod_no = p.prod_no 
-										AND t.buyer_id = u.user_id 
-										AND u.user_id = #{buyerId}
-										ORDER BY tran_no  ) inner_table
-  						WHERE ROWNUM <![CDATA[<=]]> #{search.currentPage}*#{search.pageSize} )
-  		WHERE row_seq BETWEEN (#{search.currentPage}-1)*#{search.pageSize}+1
-  		AND #{search.currentPage}*#{search.pageSize}
+		SELECT *
+		FROM ( SELECT inner_table.*, ROWNUM AS row_seq
+		FROM ( SELECT t.tran_no, p.prod_no, t.order_data, t.tran_status_code ,t.receiver_name, t.receiver_phone,
+		t.buyer_id,t.prod_count,t.dlvy_date
+		FROM transaction t, product p, users u
+		WHERE t.prod_no = p.prod_no
+		<if test="searchCondition != null">
+			<where>
+				<if test="searchCondition == 0 and searchKeyword !='' ">
+					AND PROD_NO like '${searchKeyword}%'
+				</if>
+				<if test="searchCondition == 1 and searchKeyword !='' ">
+					AND PROD_NAME like '${searchKeyword}%'
+				</if>
+				<if test="searchCondition == 2 and searchKeyword !='' ">
+					AND PRICE like '${searchKeyword}%'
+				</if>
+			</where>
+		</if>
+		AND t.buyer_id = u.user_id
+		AND u.user_id = #{buyerId}
+		ORDER BY tran_no ) inner_table
+		WHERE ROWNUM <![CDATA[<=]]>
+		#{search.currentPage}*#{search.pageSize} )
+		WHERE row_seq BETWEEN (#{search.currentPage}-1)*#{search.pageSize}+1
+		AND #{search.currentPage}*#{search.pageSize}
 	</select>
-  	
+
 	<insert id="addPurchase" parameterType="purchase">
-		INSERT 
-		INTO transaction(tran_no, prod_no, buyer_id, payment_option, receiver_name, receiver_phone, demailaddr, dlvy_request, tran_status_code, order_data, dlvy_date)
+		INSERT
+		INTO transaction(tran_no, prod_no, buyer_id, payment_option, receiver_name, receiver_phone, demailaddr, dlvy_request,
+		tran_status_code, order_data, dlvy_date, prod_count)
 		VALUES (
-					seq_transaction_tran_no.NEXTVAL,
-					#{purchaseProd.prodNo:INTEGER},
-					#{buyer.userId:VARCHAR},
-					#{paymentOption:CHAR},
-					#{receiverName:VARCHAR},
-					#{receiverPhone:VARCHAR},
-					#{divyAddr:VARCHAR},
-					#{divyRequest:VARCHAR},
-					'2',
-					SYSDATE,
-					#{divyDate:DATE} )
+		seq_transaction_tran_no.NEXTVAL,
+		#{purchaseProd.prodNo:INTEGER},
+		#{buyer.userId:VARCHAR},
+		#{paymentOption:CHAR},
+		#{receiverName:VARCHAR},
+		#{receiverPhone:VARCHAR},
+		#{divyAddr:VARCHAR},
+		#{divyRequest:VARCHAR},
+		'2',
+		SYSDATE,
+		#{divyDate:DATE},
+		#{prodCount:NUMERIC} )
 	</insert>
-	  
-	 <!-- SQL : UPDATE -->
-	 <update	id="updatePurchase"	parameterType="Purchase" >
-	   	UPDATE transaction
-	   	<set>
-	   		prod_no		 = #{purchaseProd.prodNo:INTEGER},	
-			buyer_id	 = #{buyer.userId:VARCHAR},       
-			payment_option	 = #{paymentOption:CHAR},         
-			receiver_name	 = #{receiverName:VARCHAR},       
-			receiver_phone	 = #{receiverPhone:VARCHAR},      
-			demailaddr	 = #{divyAddr:VARCHAR},           
-			dlvy_request	 = #{divyRequest:VARCHAR},      
-			dlvy_date	 = #{divyDate:DATE}
-	   	</set>
-	   	WHERE tran_no = #{tranNo}
-	 </update>
-	
-	<update	id="updateTranCode"	parameterType="Purchase" >
-	   	UPDATE transaction
-	   	<set>        
-			tran_status_code = #{tranCode:CHAR}              
-	   	</set>
-	   	WHERE tran_no = #{tranNo}
-	 </update>	 
-		 
-	
-	 <select  id="getTotalCount"  parameterType="string"	 resultType="int">
-	  	SELECT COUNT(*)
-	  	FROM( SELECT t.tran_no, p.prod_no, t.order_data, t.tran_status_code ,t.receiver_name, t.receiver_phone, t.buyer_id
-										FROM transaction t, product p, users u 
-										WHERE t.prod_no = p.prod_no 
-										AND t.buyer_id = u.user_id 
-										AND u.user_id = #{buyerId} ) countTable						
-	 </select>
-	 
-	 <select id="getSaleList" parameterType="search" resultMap="purchaseSelectMap">
-  		SELECT *
-  		FROM ( SELECT inner_table.*, ROWNUM AS row_seq
-  						FROM ( SELECT t.tran_no, p.prod_no, t.order_data, t.tran_status_code ,t.receiver_name, t.receiver_phone, t.buyer_id
-										FROM transaction t, product p, users u 
-										WHERE t.prod_no = p.prod_no 
-										AND t.buyer_id = u.user_id) inner_table
-  						WHERE ROWNUM <![CDATA[<=]]> #{search.currentPage}*#{search.pageSize} )
-  		WHERE row_seq BETWEEN (#{search.currentPage}-1)*#{search.pageSize}+1
-  		AND #{search.currentPage}*#{search.pageSize}
+
+	<!-- SQL : UPDATE -->
+	<update id="updatePurchase" parameterType="Purchase">
+		UPDATE transaction
+		<set>
+			payment_option = #{paymentOption:CHAR},
+			receiver_name = #{receiverName:VARCHAR},
+			receiver_phone = #{receiverPhone:VARCHAR},
+			demailaddr = #{divyAddr:VARCHAR},
+			dlvy_request = #{divyRequest:VARCHAR},
+			dlvy_date = #{divyDate:DATE},
+			prod_count = #{prodCount:NUMERIC}
+		</set>
+		WHERE tran_no = #{tranNo}
+	</update>
+
+	<update id="updateTranCode" parameterType="int">
+		UPDATE transaction
+		<set>
+			<if test="tranCode == '1'">
+				tran_status_code = "2"
+			</if>
+			<if test="tranCode == '2'">
+				tran_status_code = "3"
+			</if>
+		</set>
+		WHERE tran_no = #{tranNo}
+	</update>
+
+
+	<select id="getTotalCount" parameterType="map" resultType="int">
+		SELECT COUNT(*)
+		FROM( SELECT t.tran_no, p.prod_no, t.order_data, t.tran_status_code ,t.receiver_name, t.receiver_phone, t.buyer_id
+		FROM transaction t, product p, users u
+		WHERE t.prod_no = p.prod_no
+		<if test="searchCondition != null">
+			<where>
+				<if test="searchCondition == 0 and searchKeyword !='' ">
+					AND PROD_NO like '${search.searchKeyword}%'
+				</if>
+				<if test="searchCondition == 1 and searchKeyword !='' ">
+					AND PROD_NAME like '%${search.searchKeyword}%'
+				</if>
+				<if test="searchCondition == 2 and searchKeyword !='' ">
+					AND PRICE like '${search.searchKeyword}%'
+				</if>
+			</where>
+		</if>
+		AND t.buyer_id = u.user_id
+		AND u.user_id = #{buyerId} ) countTable
 	</select>
-	 
-	 <select  id="getSaleCount" resultType="int">
-	  	SELECT COUNT(*)
-	  	FROM( SELECT t.tran_no, p.prod_no, t.order_data, t.tran_status_code ,t.receiver_name, t.receiver_phone, t.buyer_id
-										FROM transaction t, product p, users u 
-										WHERE t.prod_no = p.prod_no 
-										AND t.buyer_id = u.user_id) countTable						
-	 </select>
-	 
+
+	<select id="getSaleList" parameterType="search" resultMap="purchaseSelectMap">
+		SELECT *
+		FROM ( SELECT inner_table.*, ROWNUM AS row_seq
+		FROM ( SELECT t.tran_no, p.prod_no, t.order_data, t.tran_status_code ,t.receiver_name, t.receiver_phone, t.buyer_id,
+		t.prod_count,t.dlvy_date
+		FROM transaction t, product p, users u
+		WHERE t.prod_no = p.prod_no
+		<if test="searchCondition != null">
+			<where>
+				<if test="searchCondition == 0 and searchKeyword !='' ">
+					AND PROD_NO like '${searchKeyword}%'
+				</if>
+				<if test="searchCondition == 1 and searchKeyword !='' ">
+					AND PROD_NAME like '${searchKeyword}%'
+				</if>
+				<if test="searchCondition == 2 and searchKeyword !='' ">
+					AND PRICE like '${searchKeyword}%'
+				</if>
+			</where>
+		</if>
+		AND t.buyer_id = u.user_id) inner_table
+		WHERE ROWNUM <![CDATA[<=]]>
+		#{search.currentPage}*#{search.pageSize} )
+		WHERE row_seq BETWEEN (#{search.currentPage}-1)*#{search.pageSize}+1
+		AND #{search.currentPage}*#{search.pageSize}
+	</select>
+
+	<select id="getSaleCount" resultType="int">
+		SELECT COUNT(*)
+		FROM( SELECT t.tran_no, p.prod_no, t.order_data, t.tran_status_code ,t.receiver_name, t.receiver_phone, t.buyer_id
+		FROM transaction t, product p, users u
+		WHERE t.prod_no = p.prod_no
+		<if test="searchCondition != null">
+			<where>
+				<if test="searchCondition == 0 and searchKeyword !='' ">
+					AND PROD_NO like '${searchKeyword}%'
+				</if>
+				<if test="searchCondition == 1 and searchKeyword !='' ">
+					AND PROD_NAME like '%${searchKeyword}%'
+				</if>
+				<if test="searchCondition == 2 and searchKeyword !='' ">
+					AND PRICE like '${searchKeyword}%'
+				</if>
+			</where>
+		</if>
+		AND t.buyer_id = u.user_id) countTable
+	</select>
+
+
+
 </mapper>

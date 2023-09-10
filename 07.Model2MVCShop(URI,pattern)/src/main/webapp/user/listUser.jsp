@@ -49,12 +49,7 @@
 				    let scrollHeight = $(document).height();
 				    let scrollPosition = $(window).height() + $(window).scrollTop();
 
-				    console.log("현재 scrollHeight : "+scrollHeight)
-				    console.log("현재 scrollPosition : "+scrollPosition)
-				    console.log("현재 windowHeight : "+$(window).height())
-				    
-				    
-				    // 무한 스크롤 활성화 상태에서 스크롤이 일정 위치에 도달하면 데이터를 가져옵니다.
+				    // 무한 스크롤 활성화 상태에서 스크롤이 일정 위치에 도달하면 데이터를 가져옴
 				    if (infiniteScrollEnabled && (scrollHeight - scrollPosition) / scrollHeight === 0) {
 				        infiniteScrollEnabled = false; // 중복 요청을 막기 위해 활성화 상태를 비활성화로 변경
 				        loadMoreData();
@@ -144,6 +139,7 @@
 																+"이메일 : "+JSONData.email+"<br/>"
 																+"ROLE : "+JSONData.role+"<br/>"
 																+"등록일 : "+JSONData.regDateString+"<br/>"
+																+"<a href="+"'/user/getUser?userId="+JSONData.userId+"'>수정하기</a>"
 																+"</h3>";
 									//Debug...									
 									//alert(displayValue);

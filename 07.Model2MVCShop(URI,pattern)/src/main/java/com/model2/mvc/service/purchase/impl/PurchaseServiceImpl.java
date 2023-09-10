@@ -28,8 +28,8 @@ public class PurchaseServiceImpl implements PurchaseService{
 		return purchase; 
 	}
 	@Override
-	public Purchase getPurchase(Purchase purchase) throws Exception {
-		return purchaseDao.findPurchase(purchase);
+	public Purchase getPurchase(int tranNo) throws Exception {
+		return purchaseDao.findPurchase(tranNo);
 	}
 	@Override
 	public Map<String,Object> getPurchaseList(Search search, String userId) throws Exception{

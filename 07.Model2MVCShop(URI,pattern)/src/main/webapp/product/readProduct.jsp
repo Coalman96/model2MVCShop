@@ -16,6 +16,9 @@
 <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
 <script type="text/javascript" src="../javascript/calendar.js"></script>
 <script type="text/javascript">
+
+	console.log("${user.role}")
+	
 	$(function() {
 		$("td.ct_btn01:contains('구매')").on("click", function() {
 
@@ -150,7 +153,13 @@
 		</td>
 		<td bgcolor="D6D6D6" width="1"></td>
 		<td class="ct_write01">
-			${product.prodCount}&nbsp;개
+		<c:if test="${product.prodCount <= 0}">
+		품절
+		</c:if>
+		<c:if test="${product.prodCount > 0}">
+		${product.prodCount}&nbsp;개
+		</c:if>
+		
 		</td>
 	</tr>
 	<tr>
@@ -174,7 +183,7 @@
 		<td align="right">
 		<table border="0" cellspacing="0">
 			<tr>
-			<c:if test="${!empty user && product.prodCount >0}">
+			<c:if test="${user.role != 'admin' && product.prodCount != 0}">
 				<td width="17" height="23">
 					<img src="/images/ct_btnbg01.gif" width="17" height="23"/>
 				</td>

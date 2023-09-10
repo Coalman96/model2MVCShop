@@ -46,7 +46,7 @@
 		 	
 		 	$( ".Depth03:contains('배송관리')" ).on("click" , function() {
 
-		 		$(window.parent.frames["rightFrame"].document.location).attr("href","/purchase/listPurchase?menu=manage");
+		 		$(window.parent.frames["rightFrame"].document.location).attr("href","/purchase/listSale?menu=manage");
 			});
 		 	
 		 	$( ".Depth03:contains('최근본상품')" ).on("click" , function() {
