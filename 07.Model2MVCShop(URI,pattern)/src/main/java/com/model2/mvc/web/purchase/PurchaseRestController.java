@@ -101,7 +101,9 @@ public class PurchaseRestController {
 	    if (user.getRole().equals("admin")) {
 	        map = purchaseService.getSaleList(search);
 	    } else {
+	    	
 	        map = purchaseService.getPurchaseList(search, ((User) session.getAttribute("user")).getUserId().trim());
+	        
 	    }
 	    
 	    Page resultPage = new Page(search.getCurrentPage(), ((Integer) map.get("totalCount")).intValue(), pageUnit, pageSize);

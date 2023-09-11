@@ -63,7 +63,7 @@
 				    currentPageValue++; // 1 증가
 				    $('input[name="currentPage"]').val(currentPageValue); // 업데이트된 값 설정
 				    
-				    // 서버에 요청을 보내서 데이터를 가져옵니다.
+				    // 서버에 요청을 보내서 데이터를 가져옴.
 				    $.ajax({
 				      url: "/user/json/listUser",
 				      data: JSON.stringify({ currentPage: currentPageValue,searchKeyword:searchKeywordValue,searchCondition:searchConditionValue }), // 현재 페이지 정보를 서버에 전달

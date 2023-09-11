@@ -79,12 +79,10 @@
 		        // 성공적으로 데이터를 받아왔을 때, 데이터를 화면에 추가.
 		        let prodList = data.list;
 		        let resultPage = data.resultPage;
-		        let i = (resultPage.currentPage - 1) * resultPage.pageSize;
 				console.log(searchConditionValue)
 				prodList.forEach(function(product) {
-					  i++;
 					  let row = "<tr class='ct_list_pop'>" 
-				     			+"<td align='center' height='80px'>" + i + "</td>"
+				     			+"<td align='center' height='80px'><img src="+"/images/uploadFiles/"+product.fileName.replace(',','')+" width='100px' height='100px' /></td>"
 				      			+"<td></td>"
 				      			+"<td align='left'><a href='/product/";
 				    			if ("${param.menu}" === 'manage') {
@@ -225,7 +223,7 @@
 		<td colspan="11" >전체  ${resultPage.totalCount} 건수</td>
 	</tr>
 	<tr>
-		<td class="ct_list_b" width="100">No</td>
+		<td class="ct_list_b" width="100">미리보기</td>
 		<td class="ct_line02"></td>
 		<td class="ct_list_b" width="150">상품명<br>
 		${param.menu eq 'search' ? '<h7>(상품명 click:상세정보)</h7>' : '<h7>(상품명 click:수정)</h7>'}</td>
@@ -240,11 +238,11 @@
 	<tr>
 		<td colspan="11" bgcolor="808285" height="1"></td>
 	</tr>
-	<c:set var="i" value="0"/>
 		<c:forEach var="product" items="${list}">
-			<c:set var="i" value="${i+1}"/>
 				<tr class="ct_list_pop">
-					<td align="center" height="80px"><fmt:parseNumber var="page" value="${(((resultPage.currentPage - 1) / resultPage.pageUnit) * resultPage.pageUnit) * resultPage.pageSize + i}" integerOnly="true"/>${page}</td>
+					<td align="center" height="80px">
+					<img src="/images/uploadFiles/${product.fileName.replace(',','')}" width="100px" height="100px" />
+					</td>
 					<td></td>
 					<td align="left">
 						<c:if test="${param.menu eq 'manage'}">

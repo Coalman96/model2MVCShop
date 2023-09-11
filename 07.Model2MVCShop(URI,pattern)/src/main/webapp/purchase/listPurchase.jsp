@@ -28,6 +28,139 @@
 
 		$(".ct_list_pop:nth-child(even)").css("background-color", "whitesmoke");
 		
+if($(window).height() == $(document).height()){
+	    	
+	    	loadMoreData()
+	    	
+	    }	
+		// 현재 페이지 번호와 무한 스크롤 활성화 여부를 저장하는 변수
+		let currentPage = 1;
+		let infiniteScrollEnabled = true;
+		
+		
+		
+		// 스크롤 이벤트 핸들러
+		window.addEventListener("scroll", function() {
+			// 스크롤바 위치
+		  let scrollHeight = document.documentElement.scrollHeight;
+		  let scrollPosition = window.innerHeight + window.scrollY;
+		  
+		  console.log(scrollPosition)
+		  console.log(scrollHeight)
+		  
+		  
+		// 무한 스크롤 활성화 상태에서 스크롤이 일정 위치에 도달하면 데이터를 가져옴
+		  if (infiniteScrollEnabled && (scrollHeight - scrollPosition) / scrollHeight === 0) {
+		    infiniteScrollEnabled = false; // 중복 요청을 막기 위해 활성화 상태를 비활성화로 변경
+		    loadMoreData();
+		  }
+		});
+	
+		
+		//admin과 user의 구분
+		let menu = "${param.menu}";
+		console.log("현재 접속자는 "+menu)
+		console.log("ajax url은 "+ "/purchase/json/list"+(menu === 'manage' ? 'Sale' : 'Purchase'))
+		
+	 function loadMoreData() {
+		 let searchConditionValue = $('select[name="searchCondition"]').val();
+		 let searchKeywordValue = $('input[name="searchKeyword"]').val();
+		 let currentPageValue = parseInt($('input[name="currentPage"]').val()); // 현재 값 가져오기
+		 
+		 function formatDate(manuDate) {
+			  // "00000000"을 "0000-00-00" 형식으로 변경
+			  return manuDate.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3');
+			}
+		 
+		 currentPageValue++; // 1 증가
+		    
+		    $('input[name="currentPage"]').val(currentPageValue); // 업데이트된 값 설정
+		    
+		    // 서버에 요청을 보내서 데이터를 가져옴.
+		    $.ajax({
+		      url: "/purchase/json/list"+(menu === 'manage' ? 'Sale' : 'Purchase'),
+		      data: JSON.stringify({ currentPage: currentPageValue,searchKeyword:searchKeywordValue,searchCondition:searchConditionValue }), // 현재 페이지 정보를 서버에 전달
+		      method:"POST",
+		      contentType: "application/json",
+		      dataType: "json",
+		      success: function(data,status) {
+		        // 성공적으로 데이터를 받아왔을 때, 데이터를 화면에 추가.
+		        let purchaseList = data.list;
+		        let resultPage = data.resultPage;
+				console.log(searchConditionValue)
+				console.log(url)
+				purchaseList.forEach(function(purchase) {
+					  let row = "<tr class='ct_list_pop'>" +
+		                "<td align='center' height='80px'>" +  + "</td>" +
+		                "<td></td>" +
+		                "<td align='left'><a href='/purchase/getPurchase?tranNo=" + purchase.tranNo + "'>" + purchase.purchaseProd.prodName + "</a></td>" +
+		                "<td></td>" +
+		                "<td align='left'>" + purchase.orderDate + "</td>" +
+		                "<td></td>" +
+		                "<td align='left'>" + purchase.divyDate.substring(0, 10) + "</td>" +
+		                "<td></td>" +
+		                "<td align='left'>" +
+		                (purchase.tranCode.trim() === '1' ? '구매완료' : '') +
+		                (purchase.tranCode.trim() === '2' ? '배송중' : '') +
+		                (purchase.tranCode.trim() === '3' ? '배송완료' : '') +
+		                (purchase.tranCode.trim() === '1' ? "<b data-tranNo='" + purchase.tranNo + "'>배송하기</b>" : '') +
+		                "</td>" +
+		                "<td></td>" +
+		                "<td align='left'>" + purchase.prodCount + "개</td>" +
+		                "</tr>";
+	
+					  $("table").eq(4).append(row);
+					  $( ".ct_list_pop td:nth-child(3)" ).css("color" , "red");
+						$("a").css("color" , "red");
+
+						$(".ct_list_pop:nth-child(even)" ).css("background-color" , "whitesmoke");
+					}); 
+					
+				infiniteScrollEnabled = true;
+		 },//end of success
+		 error:function(request,status,error){
+		        alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+		       }
+		
+	 })//end of ajax
+	
+	}//end of loadMoreData
+		
+	
+	//==> Autocomplete
+	$('input[name="searchKeyword"]').autocomplete({
+	    source: function(request, response) {
+	    	let searchConditionValue = $('select[name="searchCondition"]').val();
+	        $.ajax({
+	            url: "/purchase/json/listSale",
+	            data: JSON. stringify({ 
+	            	currentPage:0,
+	                searchKeyword: request.term, // 현재 입력된 검색어
+	                searchCondition: searchConditionValue
+	            }),
+	            method: "POST",
+	            contentType: "application/json",
+	            dataType: "json",
+	            success: function (data) {
+	            	let resultList = data.resultList; // resultList를 서버 응답에서 추출
+
+	                // 중복 제거 로직 추가
+	                let uniqueResults = [];
+	                $.each(resultList, function(index, item) {
+	                	//inArray사용으로 중복값제거
+	                    if ($.inArray(item, uniqueResults) === -1) {
+	                        uniqueResults.push(item);
+	                    }
+	                });
+
+	                response(uniqueResults); // 중복이 제거된 결과를 자동완성에 사용
+	                console.log(data);
+	            }//end of success
+	        });//end of ajax
+	    }
+	});//end of Autocomplete
+		
+		
 		$('tr.ct_list_pop td b:contains("물건도착")').on('click', function() {
 	        // 배송 처리할 tranNo 값을 가져옵니다.
 	        let tranNo = $(this).data('tranNo');
@@ -54,7 +187,28 @@
 	        });
 	    });
 		
-		
+		$('td b:contains("배송하기")').on('click', function() {
+	        // 배송 처리할 tranNo 값을 가져옵니다.
+	        let tranNo = $(this).data('tranNo');
+	        
+	        // Ajax 요청을 보냅니다.
+	        $.ajax({
+	            url: "/purchase/json/updateTranCode/"+tranNo, // 업데이트를 처리할 서버 엔드포인트 URL
+	            method: "GET", // GET 요청을 사용합니다.
+	            success: function(data) {
+	                // 성공적으로 데이터가 업데이트되었을 때 실행할 코드를 여기에 작성합니다.
+	                
+	                $('td b:contains("배송하기")').remove();
+	                 $("td:contains('배송하기')").text("배송중");
+	                
+	                // 예를 들어, 화면 업데이트 또는 다른 작업을 수행할 수 있습니다.
+	            },
+	            error: function(xhr, status, error) {
+	                // 요청이 실패한 경우 실행할 코드를 여기에 작성합니다.
+	                console.error("배송 업데이트 요청 실패: " + error);
+	            }
+	        });
+	    });
 
 	})
 
@@ -86,9 +240,7 @@
 						style="padding-left: 10px;">
 						<table width="100%" border="0" cellspacing="0" cellpadding="0">
 							<tr>
-
-									<td width="93%" class="ct_ttl01">구매 목록조회</td>
-
+								<td width="93%" class="ct_ttl01">${param.menu eq 'manage' ? "배송관리" : "구매목록 조회"}</td>
 							</tr>
 						</table>
 					</td>
@@ -153,7 +305,7 @@
 				<c:forEach var="purchase" items="${list}">
 					<c:set var="i" value="${i+1}" />
 					<tr class="ct_list_pop">
-						<td align="center"><fmt:parseNumber
+						<td align="center"  height="80px"><fmt:parseNumber
 									var="page"
 									value="${(((resultPage.currentPage - 1) / resultPage.pageUnit) * resultPage.pageUnit) * resultPage.pageSize + i}"
 									integerOnly="true" />${page}</td>
@@ -168,9 +320,12 @@
 						<td align="left">${purchase.divyDate.substring(0,10)}</td>
 						<td></td>
 						<td align="left">
-						<c:if test="${fn:trim(purchase.tranCode) eq '1' }">구매완료</c:if>
-						<c:if test="${fn:trim(purchase.tranCode) eq '2' }">배송중
-						<b>물건도착</b></c:if> 
+						<c:if test="${fn:trim(purchase.tranCode) eq '1' }">
+						구매완료 ${param.menu eq 'manage' ? "<b>배송하기</b>" : ""}
+						</c:if>
+						<c:if test="${fn:trim(purchase.tranCode) eq '2' }">
+						배송중 ${param.menu eq 'search' ? "<b>물건도착</b>" : ""}
+						</c:if> 
 						<c:if test="${fn:trim(purchase.tranCode) eq '3' }">배송완료</c:if> 
 						</td>
 						<td></td>
@@ -179,23 +334,7 @@
 						</td>
 					</tr>
 				</c:forEach>
-				<tr>
-					<td colspan="11" bgcolor="D6D7D6" height="1"></td>
-				</tr>
 			</table>
-
-			<table width="100%" border="0" cellspacing="0" cellpadding="0"
-				style="margin-top: 10px;">
-				<tr>
-					<td align="center"><input type="hidden" id="currentPage"
-						name="currentPage" value="0" /> <jsp:include
-							page="../common/pageNavigator.jsp">
-							<jsp:param name="file" value="Purchase" />
-						</jsp:include></td>
-				</tr>
-			</table>
-
-			<!--  페이지 Navigator 끝 -->
 		</form>
 
 	</div>

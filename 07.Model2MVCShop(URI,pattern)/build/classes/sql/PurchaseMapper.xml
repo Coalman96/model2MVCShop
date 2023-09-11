@@ -87,19 +87,19 @@
 		SELECT *
 		FROM ( SELECT inner_table.*, ROWNUM AS row_seq
 		FROM ( SELECT t.tran_no, p.prod_no, t.order_data, t.tran_status_code ,t.receiver_name, t.receiver_phone,
-		t.buyer_id,t.prod_count,t.dlvy_date
+		t.buyer_id,t.PROD_COUNT,t.dlvy_date
 		FROM transaction t, product p, users u
 		WHERE t.prod_no = p.prod_no
 		<if test="searchCondition != null">
 			<where>
 				<if test="searchCondition == 0 and searchKeyword !='' ">
-					AND PROD_NO like '${searchKeyword}%'
+					AND PROD_NO like '${search.searchKeyword}%'
 				</if>
 				<if test="searchCondition == 1 and searchKeyword !='' ">
-					AND PROD_NAME like '${searchKeyword}%'
+					AND PROD_NAME like '${search.searchKeyword}%'
 				</if>
 				<if test="searchCondition == 2 and searchKeyword !='' ">
-					AND PRICE like '${searchKeyword}%'
+					AND PRICE like '${search.searchKeyword}%'
 				</if>
 			</where>
 		</if>
@@ -186,7 +186,7 @@
 		SELECT *
 		FROM ( SELECT inner_table.*, ROWNUM AS row_seq
 		FROM ( SELECT t.tran_no, p.prod_no, t.order_data, t.tran_status_code ,t.receiver_name, t.receiver_phone, t.buyer_id,
-		t.prod_count,t.dlvy_date
+		t.PROD_COUNT,t.dlvy_date
 		FROM transaction t, product p, users u
 		WHERE t.prod_no = p.prod_no
 		<if test="searchCondition != null">

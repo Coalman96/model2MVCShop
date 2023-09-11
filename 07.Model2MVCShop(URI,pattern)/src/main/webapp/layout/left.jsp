@@ -41,12 +41,12 @@
 		 	
 		 	$( ".Depth03:contains('구매이력조회')" ).on("click" , function() {
 
-		 		$(window.parent.frames["rightFrame"].document.location).attr("href","/purchase/listPurchase.do?menu=search");
+		 		$(window.parent.frames["rightFrame"].document.location).attr("href","/purchase/listPurchase?menu=search");
 			}); 
 		 	
 		 	$( ".Depth03:contains('배송관리')" ).on("click" , function() {
 
-		 		$(window.parent.frames["rightFrame"].document.location).attr("href","/purchase/listSale?menu=manage");
+		 		$(window.parent.frames["rightFrame"].document.location).attr("href","/purchase/listPurchase?menu=manage");
 			});
 		 	
 		 	$( ".Depth03:contains('최근본상품')" ).on("click" , function() {
