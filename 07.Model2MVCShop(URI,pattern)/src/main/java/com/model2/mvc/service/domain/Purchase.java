@@ -7,6 +7,7 @@ import java.sql.Date;
 
 public class Purchase {
 	
+	///Field
 	private int rowNum;
 	private User buyer;
 	private String divyAddr;
@@ -19,8 +20,20 @@ public class Purchase {
 	private String receiverPhone;
 	private String tranCode;
 	private int tranNo;
+	private int prodCount;
 	
+
+	///Contructor
 	public Purchase(){
+	}
+	
+	///Method
+	public int getProdCount() {
+		return prodCount;
+	}
+
+	public void setProdCount(int prodCount) {
+		this.prodCount = prodCount;
 	}
 	
 	public int getRowNum() {
@@ -106,6 +119,6 @@ public class Purchase {
 				+ paymentOption + ", purchaseProd=" + purchaseProd
 				+ ", receiverName=" + receiverName + ", receiverPhone="
 				+ receiverPhone + ", tranCode=" + tranCode + ", tranNo="
-				+ tranNo + "]";
+				+ tranNo + "prodCount="+prodCount+"]";
 	}
 }

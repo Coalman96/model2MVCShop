@@ -38,9 +38,11 @@ public class PurchaseDAOImpl implements PurchaseDao {
 	}
 
 	@Override
-	public Purchase findPurchase(Purchase purchase) throws Exception {
-		purchase=sqlSession.selectOne("PurchaseMapper.findPurchase", purchase);
+	public Purchase findPurchase(int tranNo) throws Exception {
+
+		Purchase purchase=sqlSession.selectOne("PurchaseMapper.findPurchase", tranNo);
 		System.out.println(purchase.toString());
+		
 		return purchase;
 	}
 
@@ -59,7 +61,7 @@ public class PurchaseDAOImpl implements PurchaseDao {
 			list.get(i).setPurchaseProd((Product)sqlSession.selectOne("ProductMapper.getProduct", list.get(i).getPurchaseProd().getProdNo()));
 		}
 		
-		map.put("totalCount", sqlSession.selectOne("PurchaseMapper.getTotalCount", userId));
+		map.put("totalCount", sqlSession.selectOne("PurchaseMapper.getTotalCount", map));
 
 		map.put("list", list);
 
@@ -102,8 +104,4 @@ public class PurchaseDAOImpl implements PurchaseDao {
 		sqlSession.update("PurchaseMapper.updateTranCode", purchase);
 	}
 
-	@Override
-	public int getTotalCount(String userId) throws Exception {
-		return sqlSession.selectOne("PurchaseMapper.getTotalCount", userId);
-	}
 }

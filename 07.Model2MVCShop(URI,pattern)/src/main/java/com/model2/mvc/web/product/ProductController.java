@@ -16,6 +16,7 @@ import org.apache.commons.fileupload.FileUpload;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -202,7 +203,7 @@ public class ProductController {
 	
 	@RequestMapping(value = "getProduct", method = RequestMethod.GET)
 	public ModelAndView getProduct(@RequestParam("prodNo") int prodNo) throws Exception {
-	    System.out.println("/getProduct");
+	    System.out.println("product/getProduct");
 	    
 	    // Business Logic
 	    Product product = productService.findProduct(prodNo);
@@ -231,7 +232,7 @@ public class ProductController {
 	
 	@RequestMapping(value = "updateProduct", method = RequestMethod.GET)
 	public ModelAndView updateProduct(@RequestParam("prodNo") int prodNo) throws Exception {
-	    System.out.println("/updateProductView");
+	    System.out.println("product/updateProductView");
 	    
 	    // Business Logic
 	    Product product = productService.findProduct(prodNo);
@@ -260,7 +261,7 @@ public class ProductController {
 	public ModelAndView updateProduct(@ModelAttribute("product") Product product,
 	        @RequestParam(value = "file", required = false) MultipartFile[] files, HttpServletRequest request) throws Exception {
 
-	    System.out.println("/updateProduct");
+	    System.out.println("product/updateProduct");
 
 	    // 23.09.07 스프링프레임워크 파일업로드 적용
 	    // domain의 field name과 input의 name이 같을 경우 400 error 발생
@@ -346,12 +347,14 @@ public class ProductController {
 	*/
 	
 	@RequestMapping(value = "listProduct")
-	public ModelAndView listProduct(@ModelAttribute("search") Search search) throws Exception {
-	    System.out.println("/listProduct");
+	public ModelAndView listProduct(@ModelAttribute("search") Search search,HttpServletRequest request) throws Exception {
+	    System.out.println("product/listProduct");
 	    System.out.println("현재페이지 수 :::::" + search.getCurrentPage());
 	    if (search.getCurrentPage() == 0) {
 	        search.setCurrentPage(1);
 	    }
+	    
+	    System.out.println("앙기모띠"+request.getParameter("menu")); 
 	    search.setPageSize(pageSize);
 	    
 	    // Business logic 수행
@@ -369,4 +372,5 @@ public class ProductController {
 	    
 	    return modelAndView;
 	}
+	
 }

@@ -50,6 +50,11 @@ public class ProductDAOImpl implements ProductDao{
 	public void updateProduct(Product product) throws Exception{
 		sqlSession.update("ProductMapper.updateProduct",product);
 	}
+	
+	public void updateProductCount(Map<String, Object> purchase) throws Exception{
+		System.out.println("DAOimpl¿¡¼­ purchase´Â:   "+purchase );
+		sqlSession.update("ProductMapper.updateProductCount",purchase);
+	}
 
 	public int getTotalCount(Search search) throws Exception {
 		return sqlSession.selectOne("ProductMapper.getTotalCount", search);

@@ -54,5 +54,10 @@ public class ProductServiceImpl implements ProductService{
 	public void updateProduct(Product product) throws Exception {
 		productDao.updateProduct(product);
 	}
+	
+	@Override
+	public void updateProductCount(Map<String, Object> purchase) throws Exception{
+		productDao.updateProductCount(purchase);
+	}
 
 }

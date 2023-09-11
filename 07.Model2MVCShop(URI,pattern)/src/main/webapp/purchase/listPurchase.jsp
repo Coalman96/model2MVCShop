@@ -6,14 +6,15 @@
 <!DOCTYPE html>
 <html>
 <head>
-<c:if test="${param.menu eq 'manage'}">
-	<title>배송관리</title>
-</c:if>
-<c:if test="${param.menu eq 'search'}">
+
 	<title>구매 목록조회</title>
-</c:if>
+
 <link rel="stylesheet" href="/css/admin.css" type="text/css">
+<!-- jQuery UI CDN(Content Delivery Network) 호스트 사용 -->
+<link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+<!-- CDN(Content Delivery Network) 호스트 사용 -->
 <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
 <script type="text/javascript">
 	$(function() {
 
@@ -23,9 +24,37 @@
 
 		})
 
-		$(".ct_list_pop td:nth-child(3)").css("color", "red");
+		$(".ct_list_pop td:nth-child(3) a").css("color", "red");
 
 		$(".ct_list_pop:nth-child(even)").css("background-color", "whitesmoke");
+		
+		$('tr.ct_list_pop td b:contains("물건도착")').on('click', function() {
+	        // 배송 처리할 tranNo 값을 가져옵니다.
+	        let tranNo = $(this).data('tranNo');
+	        
+	        // 업데이트할 tranCode 값을 설정합니다 (2는 배송중을 나타냅니다).
+	        let updateTranCode = 2;
+	        
+	        // Ajax 요청을 보냅니다.
+	        $.ajax({
+	            url: "/purchase/json/updateTranCode/2", // 업데이트를 처리할 서버 엔드포인트 URL
+	            method: "GET", // GET 요청을 사용합니다.
+	            data: {
+	                tranNo: tranNo,
+	                tranCode: updateTranCode
+	            },
+	            success: function(data) {
+	                $('td b:contains("물건도착")').remove();
+	                 $("td:contains('배송중')").text("배송완료");
+	            },
+	            error: function(xhr, status, error) {
+	                // 요청이 실패한 경우 실행할 코드를 여기에 작성합니다.
+	                console.error("배송 업데이트 요청 실패: " + error);
+	            }
+	        });
+	    });
+		
+		
 
 	})
 
@@ -57,12 +86,9 @@
 						style="padding-left: 10px;">
 						<table width="100%" border="0" cellspacing="0" cellpadding="0">
 							<tr>
-								<c:if test="${param.menu eq 'manage'}">
-									<td width="93%" class="ct_ttl01">배송관리</td>
-								</c:if>
-								<c:if test="${param.menu eq 'search'}">
+
 									<td width="93%" class="ct_ttl01">구매 목록조회</td>
-								</c:if>
+
 							</tr>
 						</table>
 					</td>
@@ -107,17 +133,18 @@
 						${resultPage.currentPage} 페이지</td>
 				</tr>
 				<tr>
-					<td class="ct_list_b" width="100">No</td>
+					<td class="ct_list_b" width="50">No</td>
 					<td class="ct_line02"></td>
-					<td class="ct_list_b" width="150">회원ID</td>
+					<td class="ct_list_b" width="150">상품명<br>
+					<h7>(상품명 click:상세정보)</h7></td>
 					<td class="ct_line02"></td>
-					<td class="ct_list_b" width="150">회원명</td>
+					<td class="ct_list_b" width="100">주문일</td>
 					<td class="ct_line02"></td>
-					<td class="ct_list_b">전화번호</td>
+					<td class="ct_list_b" width="100">배송날짜</td>
 					<td class="ct_line02"></td>
-					<td class="ct_list_b">배송현황</td>
+					<td class="ct_list_b" width="150">배송현황</td>
 					<td class="ct_line02"></td>
-					<td class="ct_list_b">정보수정</td>
+					<td class="ct_list_b">구매수량</td>
 				</tr>
 				<tr>
 					<td colspan="11" bgcolor="808285" height="1"></td>
@@ -126,41 +153,30 @@
 				<c:forEach var="purchase" items="${list}">
 					<c:set var="i" value="${i+1}" />
 					<tr class="ct_list_pop">
-						<td align="center"><a
-							href="/purchase/getPurchase?tranNo=${purchase.tranNo}"><fmt:parseNumber
+						<td align="center"><fmt:parseNumber
 									var="page"
 									value="${(((resultPage.currentPage - 1) / resultPage.pageUnit) * resultPage.pageUnit) * resultPage.pageSize + i}"
-									integerOnly="true" />${page}</a></td>
+									integerOnly="true" />${page}</td>
 						<td></td>
-						<td align="left"><a
-							href="/user/getUser?userId=${purchase.buyer.userId}">${purchase.buyer.userId}</a>
+						<td class="ct_list_b" width="150">
+						<a href="/purchase/getPurchase?tranNo=${purchase.tranNo}">
+							${purchase.purchaseProd.prodName}</a>
 						</td>
 						<td></td>
-						<td align="left">${purchase.receiverName}</td>
+						<td align="left">${purchase.orderDate}</td>
 						<td></td>
-						<td align="left">${purchase.receiverPhone}</td>
+						<td align="left">${purchase.divyDate.substring(0,10)}</td>
 						<td></td>
-						<td align="left">현재 <c:if
-								test="${fn:trim(purchase.tranCode) eq '2' }">
-					구매완료
-				</c:if> <c:if test="${fn:trim(purchase.tranCode) eq '3' }">
-					배송중
-				</c:if> <c:if test="${fn:trim(purchase.tranCode) eq '4' }">
-					배송완료
-				</c:if> 상태 입니다.
+						<td align="left">
+						<c:if test="${fn:trim(purchase.tranCode) eq '1' }">구매완료</c:if>
+						<c:if test="${fn:trim(purchase.tranCode) eq '2' }">배송중
+						<b>물건도착</b></c:if> 
+						<c:if test="${fn:trim(purchase.tranCode) eq '3' }">배송완료</c:if> 
 						</td>
 						<td></td>
-						<td align="left"><c:if
-								test="${fn:trim(purchase.tranCode) eq '2' }">
-								<c:if test="${param.menu eq 'manage'}">
-									<a
-										href="/purchase/updateTranCodeByProd?tranNo=${purchase.tranNo}">배송하기</a>
-								</c:if>
-							</c:if> <c:if test="${fn:trim(purchase.tranCode) eq '3'}">
-								<c:if test="${param.menu eq 'search'}">
-									<a href="/purchase/updateTranCode?tranNo=${purchase.tranNo}">물건도착</a>
-								</c:if>
-							</c:if></td>
+						<td align="left">
+						${purchase.prodCount}개
+						</td>
 					</tr>
 				</c:forEach>
 				<tr>

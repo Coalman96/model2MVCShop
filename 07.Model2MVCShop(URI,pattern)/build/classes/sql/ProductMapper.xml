@@ -18,6 +18,8 @@
 		<result property="prodCount" 				column="PROD_COUNT" 					jdbcType="NUMERIC" />
 	</resultMap>
 	
+	
+	
 	<!-- SQL : INSERT -->
 	<insert 	id="addProduct"		parameterType="product" >
 	 	INSERT
@@ -47,6 +49,15 @@
 	   	</set>
 	   	WHERE prod_no = #{prodNo}
 	 </update>
+	 
+	<update id="updateProductCount" parameterType="map">
+	    <!-- 상품 갯수 업데이트 쿼리 -->
+	    UPDATE product
+	    <set>
+	        prod_count = prod_count - #{purchase.prodCount:NUMERIC}
+	    </set>
+	    WHERE prod_no = #{prodNo:NUMERIC}
+	</update>
 		 
 	<!-- SQL : SELECT LIST -->
 	<select  id="getProductList"  parameterType="map"	resultMap="productSelectMap">

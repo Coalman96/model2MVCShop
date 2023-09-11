@@ -1,7 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=EUC-KR"
     pageEncoding="EUC-KR"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
 <html>
@@ -36,36 +35,34 @@
 	    	loadMoreData()
 	    	
 	    }	
-	// 현재 페이지 번호와 무한 스크롤 활성화 여부를 저장하는 변수
-	let currentPage = 1;
-	let infiniteScrollEnabled = true;
-	
-	
-	
-	// 스크롤 이벤트 핸들러
-	$(window).scroll(function() {
-	    // 스크롤바 위치
-	    let scrollHeight = $(document).height();
-	    let scrollPosition = $(window).height() + $(window).scrollTop();
+		// 현재 페이지 번호와 무한 스크롤 활성화 여부를 저장하는 변수
+		let currentPage = 1;
+		let infiniteScrollEnabled = true;
+		
+		
+		
+		// 스크롤 이벤트 핸들러
+		window.addEventListener("scroll", function() {
+			// 스크롤바 위치
+		  let scrollHeight = document.documentElement.scrollHeight;
+		  let scrollPosition = window.innerHeight + window.scrollY;
 
-	    console.log("현재 scrollHeight : "+scrollHeight)
-	    console.log("현재 scrollPosition : "+scrollPosition)
-	    console.log("현재 windowHeight : "+$(window).height())
-	    
-	    
-	    // 무한 스크롤 활성화 상태에서 스크롤이 일정 위치에 도달하면 데이터를 가져옵니다.
-	    if (infiniteScrollEnabled && (scrollHeight - scrollPosition) / scrollHeight === 0) {
-	        infiniteScrollEnabled = false; // 중복 요청을 막기 위해 활성화 상태를 비활성화로 변경
-	        loadMoreData();
-	    }
-	});	 
+		// 무한 스크롤 활성화 상태에서 스크롤이 일정 위치에 도달하면 데이터를 가져옴
+		  if (infiniteScrollEnabled && (scrollHeight - scrollPosition) / scrollHeight === 0) {
+		    infiniteScrollEnabled = false; // 중복 요청을 막기 위해 활성화 상태를 비활성화로 변경
+		    loadMoreData();
+		  }
+		});
 	
 	 function loadMoreData() {
 		 let searchConditionValue = $('select[name="searchCondition"]').val();
 		 let searchKeywordValue = $('input[name="searchKeyword"]').val();
 		 let currentPageValue = parseInt($('input[name="currentPage"]').val()); // 현재 값 가져오기
 		 	
-		 
+		 function formatDate(manuDate) {
+			  // "00000000"을 "0000-00-00" 형식으로 변경
+			  return manuDate.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3');
+			}
 		 
 		 currentPageValue++; // 1 증가
 		    
@@ -86,22 +83,29 @@
 				console.log(searchConditionValue)
 				prodList.forEach(function(product) {
 					  i++;
-					  let row = "<tr class='ct_list_pop'>"
-									+"<td align='center'height='80px'>"+i+"</td>"
-									+"<td></td>"
-									+"<td align='left'>"+product.prodName+"</td>"
-									+"<td></td>"
-									+"<td align='left'>"+product.price+"</td>"
-									+"<td></td>"
-									+"<td align='left'>"+product.manuDate+"</td>"
-								+"</tr>";
+					  let row = "<tr class='ct_list_pop'>" 
+				     			+"<td align='center' height='80px'>" + i + "</td>"
+				      			+"<td></td>"
+				      			+"<td align='left'><a href='/product/";
+				    			if ("${param.menu}" === 'manage') {
+				      			row += "updateProduct?prodNo=" + product.prodNo + "&menu=manage";
+				    			} else if ("${param.menu}" === 'search') {
+				      			row += "getProduct?prodNo=" + product.prodNo + "&menu=search";
+				    			}
+				    			row += "'>" + product.prodName + "</a></td>"
+				      			+"<td></td>" 
+				      			+"<td align='left'>" + product.price + "</td>" 
+				      			+"<td></td>" 
+				      			+"<td align='left'>" + formatDate(product.manuDate) + "</td>"
+				      			+"<td></td>" 
+				      			+"<td align='left'>"+(product.prodCount > 0 ? "판매중" : "재고 없음")+"</td>"
+				      			+"</tr>";
 	
 					  $("table").eq(4).append(row);
 					  $( ".ct_list_pop td:nth-child(3)" ).css("color" , "red");
-						$("h7").css("color" , "red");
-						
-						//==> 아래와 같이 정의한 이유는 ??
-						$(".ct_list_pop:nth-child(4n+6)" ).css("background-color" , "whitesmoke");
+						$("a").css("color" , "red");
+
+						$(".ct_list_pop:nth-child(even)" ).css("background-color" , "whitesmoke");
 					}); 
 					
 				infiniteScrollEnabled = true;
@@ -116,7 +120,7 @@
 	    	let searchConditionValue = $('select[name="searchCondition"]').val();
 	        $.ajax({
 	            url: "/product/json/listProduct",
-	            data: JSON.stringify({ 
+	            data: JSON. stringify({ 
 	            	currentPage:0,
 	                searchKeyword: request.term, // 현재 입력된 검색어
 	                searchCondition: searchConditionValue
@@ -143,20 +147,16 @@
 	    }
 	});//end of Autocomplete
 	
-	
-	$(".ct_list_pop td:nth-child(3) a").css("color" , "red");
-	
-	$(".ct_list_pop:nth-child(even)").css("background-color" , "whitesmoke");
-
-	$("h7").css("color" , "red");
-	
 	$('td.ct_btn01:contains("검색")').on('click',function(){
 		
 		fncGetProductList(1)
 		
 	})
 	
-	
+	  $( ".ct_list_pop td:nth-child(3)" ).css("color" , "red");
+	$("a").css("color" , "red");
+
+	$(".ct_list_pop:nth-child(even)" ).css("background-color" , "whitesmoke");
 })//end of jQuery
 </script>
 </head>
@@ -167,6 +167,7 @@
 
 <form name="detailForm" >
 <input type="hidden" name="currentPage" value="0" />
+<input type="hidden" name="menu" value="${param.menu}" />
 <table width="100%" height="37" border="0" cellpadding="0"	cellspacing="0">
 	<tr>
 		<td width="15" height="37">
@@ -247,10 +248,10 @@
 					<td></td>
 					<td align="left">
 						<c:if test="${param.menu eq 'manage'}">
-							<a href="/product/updateProduct?prodNo=${product.prodNo}">${product.prodName}</a>
+							<a href="/product/updateProduct?prodNo=${product.prodNo}&menu='manage'">${product.prodName}</a>
 						</c:if>
 						<c:if test="${param.menu eq 'search'}">
-							<a href="/product/getProduct?prodNo=${product.prodNo}">${product.prodName}</a>
+							<a href="/product/getProduct?prodNo=${product.prodNo}&menu='search'">${product.prodName}</a>
 						</c:if>
 					</td>
 					<td></td>
@@ -264,14 +265,7 @@
 					<td></td>	
 				</tr>
 		</c:forEach>
-	<tr>
-		<td colspan="11" bgcolor="D6D7D6" height="1"></td>
-	</tr>	
-
 </table>
-
-<!--  페이지 Navigator 끝 -->
-
 </form>
 
 </div>
