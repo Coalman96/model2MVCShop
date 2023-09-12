@@ -99,9 +99,10 @@ public class PurchaseRestController {
 	    User user = userService.getUser(((User) session.getAttribute("user")).getUserId());
 	    
 	    if (user.getRole().equals("admin")) {
+	    	System.out.println("앙 기모띠");
 	        map = purchaseService.getSaleList(search);
 	    } else {
-	    	
+	    	System.out.println("하 시발");
 	        map = purchaseService.getPurchaseList(search, ((User) session.getAttribute("user")).getUserId().trim());
 	        
 	    }
@@ -111,20 +112,14 @@ public class PurchaseRestController {
 		
 	    // AutoComplete추가 코드
 	 		 List<String> resultList = new ArrayList<>();
-	 		 List<Product> saleList = (List<Product>) map.get("list");
+	 		 List<Purchase> saleList = (List<Purchase>) map.get("list");
 	 		
-	 		for (Product sale : saleList) {
+	 		for (Purchase sale : saleList) {
 	 			 if ("0".equals(search.getSearchCondition())) {
-	 		            // searchCondition이 0인 경우 userId를 리스트에 추가
-	 		            resultList.add(""+sale.getProdNo());
-	 		        } else if ("1".equals(search.getSearchCondition())) {
-	 		            // searchCondition이 1인 경우 userName을 리스트에 추가
-	 		            resultList.add(sale.getProdName());
-	 		        } else if ("2".equals(search.getSearchCondition())) {
-	 		            // searchCondition이 1인 경우 userName을 리스트에 추가
-	 		            resultList.add(""+sale.getPrice());
+	 		            // searchCondition이 0인 경우 상품번호를 리스트에 추가
+	 		            resultList.add(""+sale.getPurchaseProd().getProdName());
 	 		        }
-	 	        // 다른 조건에 따라 추가 작업 수행 가능
+	 	        
 	 	    }
 
 		    map.put("resultList", resultList);
@@ -135,7 +130,7 @@ public class PurchaseRestController {
 		    
 		    return map;
 	}
-	
+	/*
 	@RequestMapping(value = "json/listSale")
 	public  Map<String , Object> listSale(@RequestBody Search search, HttpServletRequest request) throws Exception {
 	    
@@ -158,21 +153,15 @@ public class PurchaseRestController {
 	    System.out.println(resultPage);
 		
 	    // AutoComplete추가 코드
-	 		 List<String> resultList = new ArrayList<>();
-	 		 List<Product> saleList = (List<Product>) map.get("list");
-	 		
-	 		for (Product sale : saleList) {
+	    List<String> resultList = new ArrayList<>();
+		 List<Purchase> saleList = (List<Purchase>) map.get("list");
+		
+	 		for (Purchase sale : saleList) {
 	 			 if ("0".equals(search.getSearchCondition())) {
-	 		            // searchCondition이 0인 경우 userId를 리스트에 추가
-	 		            resultList.add(""+sale.getProdNo());
-	 		        } else if ("1".equals(search.getSearchCondition())) {
-	 		            // searchCondition이 1인 경우 userName을 리스트에 추가
-	 		            resultList.add(sale.getProdName());
-	 		        } else if ("2".equals(search.getSearchCondition())) {
-	 		            // searchCondition이 1인 경우 userName을 리스트에 추가
-	 		            resultList.add(""+sale.getPrice());
+	 		            // searchCondition이 0인 경우 상품번호를 리스트에 추가
+	 		            resultList.add(""+sale.getPurchaseProd().getProdName());
 	 		        }
-	 	        // 다른 조건에 따라 추가 작업 수행 가능
+	 	        
 	 	    }
 
 		    map.put("resultList", resultList);
@@ -183,6 +172,6 @@ public class PurchaseRestController {
 		    
 		    return map;
 	}
-
+*/
 
 }

@@ -16,6 +16,18 @@
 <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
 <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
 <script type="text/javascript">
+
+	function fncGetPurchaseList(currentPage) {
+		if (currentPage == undefined) {
+			currentPage = 1;
+		}
+		$('#currentPage').val(currentPage)
+	
+		$('form').attr("method", "POST").attr("action",
+				"/purchase/listPurchase?menu=${param.menu}").submit()
+	}
+
+
 	$(function() {
 
 		$('td.ct_btn01:contains("검색")').on('click', function() {
@@ -60,17 +72,26 @@ if($(window).height() == $(document).height()){
 		//admin과 user의 구분
 		let menu = "${param.menu}";
 		console.log("현재 접속자는 "+menu)
-		console.log("ajax url은 "+ "/purchase/json/list"+(menu === 'manage' ? 'Sale' : 'Purchase'))
+		//console.log("ajax url은 "+ "/purchase/json/list"+(menu === 'manage' ? 'Sale' : 'Purchase'))
 		
 	 function loadMoreData() {
 		 let searchConditionValue = $('select[name="searchCondition"]').val();
 		 let searchKeywordValue = $('input[name="searchKeyword"]').val();
 		 let currentPageValue = parseInt($('input[name="currentPage"]').val()); // 현재 값 가져오기
 		 
-		 function formatDate(manuDate) {
-			  // "00000000"을 "0000-00-00" 형식으로 변경
-			  return manuDate.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3');
+		 //ordderDate 날짜변환
+		 function formatDate(date) {
+			  const year = date.getFullYear();
+			  const month = String(date.getMonth() + 1).padStart(2, '0');
+			  const day = String(date.getDate()).padStart(2, '0');
+			  return year+"-"+month+"-"+day;
 			}
+		 
+		 
+		// function formatDate(divyDate) {
+			  // "00000000"을 "0000-00-00" 형식으로 변경
+			 // return divyDate.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3');
+			//}
 		 
 		 currentPageValue++; // 1 증가
 		    
@@ -78,26 +99,26 @@ if($(window).height() == $(document).height()){
 		    
 		    // 서버에 요청을 보내서 데이터를 가져옴.
 		    $.ajax({
-		      url: "/purchase/json/list"+(menu === 'manage' ? 'Sale' : 'Purchase'),
+		      url: "/purchase/json/listPurchase",
 		      data: JSON.stringify({ currentPage: currentPageValue,searchKeyword:searchKeywordValue,searchCondition:searchConditionValue }), // 현재 페이지 정보를 서버에 전달
 		      method:"POST",
 		      contentType: "application/json",
 		      dataType: "json",
 		      success: function(data,status) {
 		        // 성공적으로 데이터를 받아왔을 때, 데이터를 화면에 추가.
+		        console.log(currentPageValue)
+		        console.log(data.list)
 		        let purchaseList = data.list;
 		        let resultPage = data.resultPage;
-				console.log(searchConditionValue)
-				console.log(url)
 				purchaseList.forEach(function(purchase) {
 					  let row = "<tr class='ct_list_pop'>" +
-		                "<td align='center' height='80px'>" +  + "</td>" +
+					  "<td align='center' height='80px'><img src="+"/images/uploadFiles/"+purchase.purchaseProd.fileName.replace(',','')+" width='100px' height='100px' /></td>" +
 		                "<td></td>" +
-		                "<td align='left'><a href='/purchase/getPurchase?tranNo=" + purchase.tranNo + "'>" + purchase.purchaseProd.prodName + "</a></td>" +
+		                "<td align='center'><a href='/purchase/getPurchase?tranNo=" + purchase.tranNo + "'>" + purchase.purchaseProd.prodName + "</a></td>" +
 		                "<td></td>" +
-		                "<td align='left'>" + purchase.orderDate + "</td>" +
+		                "<td align='left'>" + formatDate(new Date(purchase.orderDate)) + "</td>" +
 		                "<td></td>" +
-		                "<td align='left'>" + purchase.divyDate.substring(0, 10) + "</td>" +
+		                "<td align='left'>" + purchase.divyDate.substring(0,10) + "</td>" +
 		                "<td></td>" +
 		                "<td align='left'>" +
 		                (purchase.tranCode.trim() === '1' ? '구매완료' : '') +
@@ -132,7 +153,8 @@ if($(window).height() == $(document).height()){
 	    source: function(request, response) {
 	    	let searchConditionValue = $('select[name="searchCondition"]').val();
 	        $.ajax({
-	            url: "/purchase/json/listSale",
+	            //url: "/purchase/json/list"+(menu === 'manage' ? 'Sale' : 'Purchase'),
+	            url: "/purchase/json/listPurchase",
 	            data: JSON. stringify({ 
 	            	currentPage:0,
 	                searchKeyword: request.term, // 현재 입력된 검색어
@@ -164,7 +186,7 @@ if($(window).height() == $(document).height()){
 		$('tr.ct_list_pop td b:contains("물건도착")').on('click', function() {
 	        // 배송 처리할 tranNo 값을 가져옵니다.
 	        let tranNo = $(this).data('tranNo');
-	        
+	        console.log(tranNo)
 	        // 업데이트할 tranCode 값을 설정합니다 (2는 배송중을 나타냅니다).
 	        let updateTranCode = 2;
 	        
@@ -190,11 +212,19 @@ if($(window).height() == $(document).height()){
 		$('td b:contains("배송하기")').on('click', function() {
 	        // 배송 처리할 tranNo 값을 가져옵니다.
 	        let tranNo = $(this).data('tranNo');
+	        console.log(tranNo)
+	        
+	        // 업데이트할 tranCode 값을 설정합니다 (3는 물건도착을 나타냅니다).
+	        let updateTranCode = 2;
 	        
 	        // Ajax 요청을 보냅니다.
 	        $.ajax({
 	            url: "/purchase/json/updateTranCode/"+tranNo, // 업데이트를 처리할 서버 엔드포인트 URL
 	            method: "GET", // GET 요청을 사용합니다.
+	            data: {
+	                tranNo: tranNo,
+	                tranCode: updateTranCode
+	            },
 	            success: function(data) {
 	                // 성공적으로 데이터가 업데이트되었을 때 실행할 코드를 여기에 작성합니다.
 	                
@@ -212,15 +242,7 @@ if($(window).height() == $(document).height()){
 
 	})
 
-	function fncGetPurchaseList(currentPage) {
-		if (currentPage == undefined) {
-			currentPage = 1;
-		}
-		$('#currentPage').val(currentPage)
 
-		$('form').attr("method", "POST").attr("action",
-				"/purchase/listPurchase?menu=${param.menu}").submit()
-	}
 </script>
 </head>
 
@@ -231,6 +253,7 @@ if($(window).height() == $(document).height()){
 
 		<!-- <form name="detailForm" action="/purchase/listPurchase?menu=${param.menu}" method="post"> -->
 		<form name="detailForm">
+		<input type="hidden" name="currentPage" value="1" />
 			<table width="100%" height="37" border="0" cellpadding="0"
 				cellspacing="0">
 				<tr>
@@ -255,11 +278,7 @@ if($(window).height() == $(document).height()){
 					<td align="right"><select name="searchCondition"
 						class="ct_input_g" style="width: 80px">
 							<option value="0"
-								${ ! empty search.searchCondition && search.searchCondition==0 ? "selected" : "" }>상품번호</option>
-							<option value="1"
-								${ ! empty search.searchCondition && search.searchCondition==1 ? "selected" : "" }>상품명</option>
-							<option value="2"
-								${ ! empty search.searchCondition && search.searchCondition==2 ? "selected" : "" }>상품가격</option>
+								${ ! empty search.searchCondition && search.searchCondition==0 ? "selected" : "" }>상품명</option>
 					</select> <input type="text" name="searchKeyword"
 						value="${! empty search.searchKeyword ? search.searchKeyword : '' }"
 						class="ct_input_g" style="width: 200px; height: 19px" /></td>
@@ -301,14 +320,11 @@ if($(window).height() == $(document).height()){
 				<tr>
 					<td colspan="11" bgcolor="808285" height="1"></td>
 				</tr>
-				<c:set var="i" value="0" />
 				<c:forEach var="purchase" items="${list}">
-					<c:set var="i" value="${i+1}" />
 					<tr class="ct_list_pop">
-						<td align="center"  height="80px"><fmt:parseNumber
-									var="page"
-									value="${(((resultPage.currentPage - 1) / resultPage.pageUnit) * resultPage.pageUnit) * resultPage.pageSize + i}"
-									integerOnly="true" />${page}</td>
+						<td align="center"  height="80px">
+						<img src="/images/uploadFiles/${purchase.purchaseProd.fileName.replace(',','')}" width="100px" height="100px" />
+						</td>
 						<td></td>
 						<td class="ct_list_b" width="150">
 						<a href="/purchase/getPurchase?tranNo=${purchase.tranNo}">
@@ -321,10 +337,10 @@ if($(window).height() == $(document).height()){
 						<td></td>
 						<td align="left">
 						<c:if test="${fn:trim(purchase.tranCode) eq '1' }">
-						구매완료 ${param.menu eq 'manage' ? "<b>배송하기</b>" : ""}
+						구매완료 ${param.menu eq 'manage' ? "<b 'data-tranNo='purchase.tranNo>배송하기</b>" : ""}
 						</c:if>
 						<c:if test="${fn:trim(purchase.tranCode) eq '2' }">
-						배송중 ${param.menu eq 'search' ? "<b>물건도착</b>" : ""}
+						배송중 ${param.menu eq 'search' ? "<b 'data-tranNo='purchase.tranNo>물건도착</b>" : ""}
 						</c:if> 
 						<c:if test="${fn:trim(purchase.tranCode) eq '3' }">배송완료</c:if> 
 						</td>

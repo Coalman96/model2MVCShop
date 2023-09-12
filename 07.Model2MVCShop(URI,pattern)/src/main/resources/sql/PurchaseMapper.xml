@@ -86,30 +86,13 @@
 	<select id="getPurchaseList" parameterType="map" resultMap="purchaseSelectMap">
 		SELECT *
 		FROM ( SELECT inner_table.*, ROWNUM AS row_seq
-		FROM ( SELECT t.tran_no, p.prod_no, t.order_data, t.tran_status_code ,t.receiver_name, t.receiver_phone,
+		FROM ( SELECT t.tran_no, p.prod_no,p.prod_name, t.order_data, t.tran_status_code ,t.receiver_name, t.receiver_phone,
 		t.buyer_id,t.PROD_COUNT,t.dlvy_date
 		FROM transaction t, product p, users u
-		WHERE t.prod_no = p.prod_no
-		<if test="searchCondition != null">
-			<where>
-				<if test="searchCondition == 0 and searchKeyword !='' ">
-					AND PROD_NO like '${search.searchKeyword}%'
-				</if>
-				<if test="searchCondition == 1 and searchKeyword !='' ">
-					AND PROD_NAME like '${search.searchKeyword}%'
-				</if>
-				<if test="searchCondition == 2 and searchKeyword !='' ">
-					AND PRICE like '${search.searchKeyword}%'
-				</if>
-			</where>
-		</if>
-		AND t.buyer_id = u.user_id
-		AND u.user_id = #{buyerId}
+		WHERE t.prod_no = p.prod_no AND p.prod_name like '${search.searchKeyword}%' AND t.buyer_id = u.user_id AND u.user_id = '${buyerId}'
 		ORDER BY tran_no ) inner_table
-		WHERE ROWNUM <![CDATA[<=]]>
-		#{search.currentPage}*#{search.pageSize} )
-		WHERE row_seq BETWEEN (#{search.currentPage}-1)*#{search.pageSize}+1
-		AND #{search.currentPage}*#{search.pageSize}
+						WHERE ROWNUM &lt;= #{search.endRowNum} )
+		WHERE row_seq BETWEEN #{search.startRowNum} AND #{search.endRowNum} 
 	</select>
 
 	<insert id="addPurchase" parameterType="purchase">
@@ -162,72 +145,34 @@
 
 	<select id="getTotalCount" parameterType="map" resultType="int">
 		SELECT COUNT(*)
-		FROM( SELECT t.tran_no, p.prod_no, t.order_data, t.tran_status_code ,t.receiver_name, t.receiver_phone, t.buyer_id
+		FROM( SELECT t.tran_no, p.prod_no,p.prod_name, t.order_data, t.tran_status_code ,t.receiver_name, t.receiver_phone, t.buyer_id
 		FROM transaction t, product p, users u
-		WHERE t.prod_no = p.prod_no
-		<if test="searchCondition != null">
-			<where>
-				<if test="searchCondition == 0 and searchKeyword !='' ">
-					AND PROD_NO like '${search.searchKeyword}%'
-				</if>
-				<if test="searchCondition == 1 and searchKeyword !='' ">
-					AND PROD_NAME like '%${search.searchKeyword}%'
-				</if>
-				<if test="searchCondition == 2 and searchKeyword !='' ">
-					AND PRICE like '${search.searchKeyword}%'
-				</if>
-			</where>
-		</if>
-		AND t.buyer_id = u.user_id
-		AND u.user_id = #{buyerId} ) countTable
+		WHERE t.prod_no = p.prod_no AND p.prod_name like '${search.searchKeyword}%' AND t.buyer_id = u.user_id AND u.user_id = #{buyerId} ) countTable
 	</select>
 
-	<select id="getSaleList" parameterType="search" resultMap="purchaseSelectMap">
-		SELECT *
-		FROM ( SELECT inner_table.*, ROWNUM AS row_seq
-		FROM ( SELECT t.tran_no, p.prod_no, t.order_data, t.tran_status_code ,t.receiver_name, t.receiver_phone, t.buyer_id,
-		t.PROD_COUNT,t.dlvy_date
-		FROM transaction t, product p, users u
-		WHERE t.prod_no = p.prod_no
-		<if test="searchCondition != null">
-			<where>
-				<if test="searchCondition == 0 and searchKeyword !='' ">
-					AND PROD_NO like '${searchKeyword}%'
-				</if>
-				<if test="searchCondition == 1 and searchKeyword !='' ">
-					AND PROD_NAME like '${searchKeyword}%'
-				</if>
-				<if test="searchCondition == 2 and searchKeyword !='' ">
-					AND PRICE like '${searchKeyword}%'
-				</if>
-			</where>
-		</if>
-		AND t.buyer_id = u.user_id) inner_table
-		WHERE ROWNUM <![CDATA[<=]]>
-		#{search.currentPage}*#{search.pageSize} )
-		WHERE row_seq BETWEEN (#{search.currentPage}-1)*#{search.pageSize}+1
-		AND #{search.currentPage}*#{search.pageSize}
-	</select>
+<select id="getSaleList" parameterType="search" resultMap="purchaseSelectMap">
+    SELECT *
+    FROM (
+        SELECT inner_table.*, ROWNUM AS row_seq
+        FROM (
+            SELECT t.tran_no, p.prod_no, p.prod_name, t.order_data, t.tran_status_code, t.receiver_name, t.receiver_phone, t.buyer_id,
+            t.PROD_COUNT, t.dlvy_date
+            FROM transaction t, product p, users u
+            WHERE t.prod_no = p.prod_no AND t.buyer_id = u.user_id
+            <if test="searchKeyword != null and searchCondition == 0 and searchKeyword != ''">
+                AND p.prod_name like '${searchKeyword}%'
+            </if>
+        ) inner_table
+						WHERE ROWNUM &lt;= #{endRowNum} )
+		WHERE row_seq BETWEEN #{startRowNum} AND #{endRowNum} 
+</select>
+
 
 	<select id="getSaleCount" resultType="int">
 		SELECT COUNT(*)
-		FROM( SELECT t.tran_no, p.prod_no, t.order_data, t.tran_status_code ,t.receiver_name, t.receiver_phone, t.buyer_id
+		FROM( SELECT t.tran_no, p.prod_no,p.prod_name, t.order_data, t.tran_status_code ,t.receiver_name, t.receiver_phone, t.buyer_id
 		FROM transaction t, product p, users u
-		WHERE t.prod_no = p.prod_no
-		<if test="searchCondition != null">
-			<where>
-				<if test="searchCondition == 0 and searchKeyword !='' ">
-					AND PROD_NO like '${searchKeyword}%'
-				</if>
-				<if test="searchCondition == 1 and searchKeyword !='' ">
-					AND PROD_NAME like '%${searchKeyword}%'
-				</if>
-				<if test="searchCondition == 2 and searchKeyword !='' ">
-					AND PRICE like '${searchKeyword}%'
-				</if>
-			</where>
-		</if>
-		AND t.buyer_id = u.user_id) countTable
+		WHERE t.prod_no = p.prod_no AND p.prod_name like '${searchKeyword}%' AND t.buyer_id = u.user_id) countTable
 	</select>
 
 
