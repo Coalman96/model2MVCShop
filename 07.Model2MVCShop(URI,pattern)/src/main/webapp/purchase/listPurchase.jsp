@@ -40,16 +40,17 @@
 
 		$(".ct_list_pop:nth-child(even)").css("background-color", "whitesmoke");
 		
-if($(window).height() == $(document).height()){
+		if($(window).height() == $(document).height()){
 	    	
 	    	loadMoreData()
 	    	
 	    }	
+		
 		// 현재 페이지 번호와 무한 스크롤 활성화 여부를 저장하는 변수
 		let currentPage = 1;
 		let infiniteScrollEnabled = true;
 		
-		
+		loadMoreData();
 		
 		// 스크롤 이벤트 핸들러
 		window.addEventListener("scroll", function() {
@@ -106,8 +107,6 @@ if($(window).height() == $(document).height()){
 		      dataType: "json",
 		      success: function(data,status) {
 		        // 성공적으로 데이터를 받아왔을 때, 데이터를 화면에 추가.
-		        console.log(currentPageValue)
-		        console.log(data.list)
 		        let purchaseList = data.list;
 		        let resultPage = data.resultPage;
 				purchaseList.forEach(function(purchase) {
@@ -118,13 +117,14 @@ if($(window).height() == $(document).height()){
 		                "<td></td>" +
 		                "<td align='left'>" + formatDate(new Date(purchase.orderDate)) + "</td>" +
 		                "<td></td>" +
-		                "<td align='left'>" + purchase.divyDate.substring(0,10) + "</td>" +
+		                "<td align='left'>" + (purchase.divyDate != undefined ? purchase.divyDate.substring(0,10) : '') + "</td>" +
 		                "<td></td>" +
 		                "<td align='left'>" +
 		                (purchase.tranCode.trim() === '1' ? '구매완료' : '') +
 		                (purchase.tranCode.trim() === '2' ? '배송중' : '') +
 		                (purchase.tranCode.trim() === '3' ? '배송완료' : '') +
-		                (purchase.tranCode.trim() === '1' ? "<b data-tranNo='" + purchase.tranNo + "'>배송하기</b>" : '') +
+		                (purchase.tranCode.trim() === '1' && menu === 'manage'? "<b data-tranNo='" + purchase.tranNo + "'>배송하기</b>" : '') +
+		                (purchase.tranCode.trim() === '2' && menu === 'search'? "<b data-tranNo='" + purchase.tranNo + "'>물건도착</b>" : '') +
 		                "</td>" +
 		                "<td></td>" +
 		                "<td align='left'>" + purchase.prodCount + "개</td>" +
@@ -139,9 +139,7 @@ if($(window).height() == $(document).height()){
 					
 				infiniteScrollEnabled = true;
 		 },//end of success
-		 error:function(request,status,error){
-		        alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
-		       }
+		
 		
 	 })//end of ajax
 	
@@ -183,24 +181,23 @@ if($(window).height() == $(document).height()){
 	});//end of Autocomplete
 		
 		
-		$('tr.ct_list_pop td b:contains("물건도착")').on('click', function() {
+	$(document).on('click', 'tr.ct_list_pop td b:contains("물건도착")', function() {
 	        // 배송 처리할 tranNo 값을 가져옵니다.
-	        let tranNo = $(this).data('tranNo');
+	        let tranNo = $(this).data('tranno');
 	        console.log(tranNo)
 	        // 업데이트할 tranCode 값을 설정합니다 (2는 배송중을 나타냅니다).
-	        let updateTranCode = 2;
+	        let updateTranCode = 3;
+	        
+	        let target = $(this);
 	        
 	        // Ajax 요청을 보냅니다.
 	        $.ajax({
-	            url: "/purchase/json/updateTranCode/2", // 업데이트를 처리할 서버 엔드포인트 URL
+	            url: "/purchase/json/updateTranCode/"+tranNo+"/"+updateTranCode, // 업데이트를 처리할 서버 엔드포인트 URL
 	            method: "GET", // GET 요청을 사용합니다.
-	            data: {
-	                tranNo: tranNo,
-	                tranCode: updateTranCode
-	            },
 	            success: function(data) {
-	                $('td b:contains("물건도착")').remove();
-	                 $("td:contains('배송중')").text("배송완료");
+	            	target.parent().text("배송완료");
+	            	target.remove();
+	            	
 	            },
 	            error: function(xhr, status, error) {
 	                // 요청이 실패한 경우 실행할 코드를 여기에 작성합니다.
@@ -209,27 +206,28 @@ if($(window).height() == $(document).height()){
 	        });
 	    });
 		
-		$('td b:contains("배송하기")').on('click', function() {
+	$(document).on('click', 'tr.ct_list_pop td b:contains("배송하기")', function() {
 	        // 배송 처리할 tranNo 값을 가져옵니다.
-	        let tranNo = $(this).data('tranNo');
+	        let tranNo = $(this).data('tranno');
 	        console.log(tranNo)
 	        
 	        // 업데이트할 tranCode 값을 설정합니다 (3는 물건도착을 나타냅니다).
 	        let updateTranCode = 2;
 	        
+	 	    // 저장한 클릭한 요소를 변수에 저장
+	        let target = $(this);
+
+	        
 	        // Ajax 요청을 보냅니다.
 	        $.ajax({
-	            url: "/purchase/json/updateTranCode/"+tranNo, // 업데이트를 처리할 서버 엔드포인트 URL
+	        	 url: "/purchase/json/updateTranCode/"+tranNo+"/"+updateTranCode, // 업데이트를 처리할 서버 엔드포인트 URL
 	            method: "GET", // GET 요청을 사용합니다.
-	            data: {
-	                tranNo: tranNo,
-	                tranCode: updateTranCode
-	            },
 	            success: function(data) {
 	                // 성공적으로 데이터가 업데이트되었을 때 실행할 코드를 여기에 작성합니다.
 	                
-	                $('td b:contains("배송하기")').remove();
-	                 $("td:contains('배송하기')").text("배송중");
+	                target.parent().text("배송중");
+	                target.remove();
+	                
 	                
 	                // 예를 들어, 화면 업데이트 또는 다른 작업을 수행할 수 있습니다.
 	            },
@@ -337,12 +335,32 @@ if($(window).height() == $(document).height()){
 						<td></td>
 						<td align="left">
 						<c:if test="${fn:trim(purchase.tranCode) eq '1' }">
-						구매완료 ${param.menu eq 'manage' ? "<b 'data-tranNo='purchase.tranNo>배송하기</b>" : ""}
+						    구매완료
+						    <c:choose>
+						        <c:when test="${param.menu eq 'manage' }">
+						            <b data-tranNo="${purchase.tranNo}">배송하기</b>
+						        </c:when>
+						        <c:otherwise>
+						            <!-- 다른 경우에 대한 처리 -->
+						        </c:otherwise>
+						    </c:choose>
 						</c:if>
+						
 						<c:if test="${fn:trim(purchase.tranCode) eq '2' }">
-						배송중 ${param.menu eq 'search' ? "<b 'data-tranNo='purchase.tranNo>물건도착</b>" : ""}
-						</c:if> 
-						<c:if test="${fn:trim(purchase.tranCode) eq '3' }">배송완료</c:if> 
+						    배송중
+						    <c:choose>
+						        <c:when test="${param.menu eq 'search' }">
+						            <b data-tranNo="${purchase.tranNo}">물건도착</b>
+						        </c:when>
+						        <c:otherwise>
+						            <!-- 다른 경우에 대한 처리 -->
+						        </c:otherwise>
+						    </c:choose>
+						</c:if>
+						
+						<c:if test="${fn:trim(purchase.tranCode) eq '3' }">
+						    배송완료
+						</c:if>
 						</td>
 						<td></td>
 						<td align="left">

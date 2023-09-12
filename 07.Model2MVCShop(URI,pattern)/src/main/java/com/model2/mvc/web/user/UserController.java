@@ -281,13 +281,13 @@ public class UserController {
 	@RequestMapping( value="logout", method=RequestMethod.GET )
 	public ModelAndView logout(HttpSession session ) throws Exception{
 		
-		System.out.println("/user/logout : POST");
+		System.out.println("/user/logout : GET");
 		
 		session.invalidate();
 		
 		// Model °ú View ¿¬°á
 		ModelAndView modelAndView = new ModelAndView();
-		modelAndView.setViewName("redirect:/index.jsp");
+		modelAndView.setViewName("forward:/index.jsp");
 		
 		return modelAndView;
 	}

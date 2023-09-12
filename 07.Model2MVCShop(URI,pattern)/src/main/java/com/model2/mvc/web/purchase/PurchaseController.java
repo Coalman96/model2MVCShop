@@ -176,6 +176,7 @@ public class PurchaseController {
 	    return modelAndView;
 	}
 	
+	/*
 	@RequestMapping(value = "updateTranCode", method = RequestMethod.GET)
 	public void updateTranCode(@RequestParam("tranNo") int tranNo) throws Exception {
 		
@@ -186,6 +187,7 @@ public class PurchaseController {
 	    purchaseService.updateTranCode(purchase);
 
 	}
+	*/
 
 	@RequestMapping(value = "listPurchase")
 	public ModelAndView listPurchase(@ModelAttribute("search") Search search, HttpServletRequest request) throws Exception {

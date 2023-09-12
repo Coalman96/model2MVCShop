@@ -95,7 +95,9 @@ public class PurchaseDAOImpl implements PurchaseDao {
 
 	@Override
 	public Purchase updatePurchase(Purchase purchase) throws Exception {
+
 		sqlSession.update("PurchaseMapper.updatePurchase", purchase);
+
 		return purchase;
 	}
 

@@ -68,15 +68,20 @@ public class PurchaseRestController {
 	int pageSize;
 	
 	
-	@RequestMapping(value = "json/updateTranCode/{tranNo}", method = RequestMethod.GET)
-	public void updateTranCode(@PathVariable("tranNo") int tranNo) throws Exception {
+	@RequestMapping(value = "json/updateTranCode/{tranNo}/{updateTranCode}", method = RequestMethod.GET)
+	public void updateTranCode(@PathVariable("tranNo") int tranNo,
+								@PathVariable("updateTranCode") String updateTranCode) throws Exception {
 		
-		System.out.println("purchase/updateTranCode");
-		System.out.println(tranNo);
-		
+		System.out.println("purchase/json/updateTranCode");
 		Purchase purchase = purchaseService.getPurchase(tranNo);
-		
+		purchase.setTranCode(updateTranCode);
+		purchase.setTranNo(tranNo);
+
 	    purchaseService.updateTranCode(purchase);
+
+		
+		
+		
 
 	}
 

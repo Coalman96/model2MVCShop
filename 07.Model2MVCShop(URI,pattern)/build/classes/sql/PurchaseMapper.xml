@@ -129,17 +129,10 @@
 		WHERE tran_no = #{tranNo}
 	</update>
 
-	<update id="updateTranCode" parameterType="int">
-		UPDATE transaction
-		<set>
-			<if test="tranCode == '1'">
-				tran_status_code = "2"
-			</if>
-			<if test="tranCode == '2'">
-				tran_status_code = "3"
-			</if>
-		</set>
-		WHERE tran_no = #{tranNo}
+	<update id="updateTranCode" parameterType="purchase">
+	    UPDATE transaction
+	    SET tran_status_code = #{tranCode}
+	    WHERE tran_no = #{tranNo}
 	</update>
 
 
