@@ -38,17 +38,26 @@
 		
 
 		  // JavaScript를 사용하여 페이지 로드
-		  function loadPage(pageUrl) {
+		  function loadPage(pageUrl,method) {
 		    var xhttp = new XMLHttpRequest();
 		    xhttp.onreadystatechange = function() {
 		      if (this.readyState == 4 && this.status == 200) {
 		        document.getElementById("bottomContent").innerHTML = this.responseText;
 		      }
 		    };
-		    xhttp.open("POST", pageUrl, true);
+		    if(method === "GET"){
+		    	
+		    	xhttp.open("GET", pageUrl, false);
+		    	
+		    }else if(method === "POST"){
+		    	
+		    	xhttp.open("POST", pageUrl, false);
+		    	
+		    }
+		    
 		    xhttp.send();
 		  }
-		  loadPage("/user/listUser");
+		  loadPage("/user/listUser", "POST");
 		  // 페이지 로드 함수 호출
 		  //loadPage("/user/listUser.jsp");
 		
@@ -71,11 +80,6 @@
 			  
 		});
 		
-		$("button.btn-secondary").eq(0).on("click", function() {
-			
-		$("form").attr("method","POST").attr("action","/user/login").submit();
-		
-		});
 		
 		$("i.bi-door-open").on("click", function() {
 			
@@ -86,7 +90,8 @@
 		//navigation
 		$( "a.nav-link:contains('개인정보조회')" ).on("click" , function() {
 
-			loadPage("/user/getUser?userId=${user.userId}");
+			loadPage("/user/getUser?userId=${user.userId}", "GET");
+			console.log("아시발")
 		});
 		
 	 	$( "a.nav-link:contains('회원정보조회')" ).on("click" , function() {
@@ -97,13 +102,13 @@
 	 	
 	 	$( "a.nav-link:contains('판매상품등록')" ).on("click" , function() {
 
-	 		loadPage("../product/addProductView.jsp");
+	 		loadPage("../product/addProductView.jsp", "GET");
 	 		
 		});
 	 	
 	 	$( "a.nav-link:contains('판매상품관리')" ).on("click" , function() {
 	 		
-	 		loadPage("/product/listProduct?menu=manage");
+	 		loadPage("/product/listProduct?menu=manage", "GET");
 	 		
 		}); 
 	 	
@@ -132,9 +137,7 @@
 		}); 
 	 	
 		function history(){
-			popWin = window.open("/history.jsp",
-														"popWin",
-														"left=300, top=200, width=300, height=200, marginwidth=0, marginheight=0, scrollbars=no, scrolling=no, menubar=no, resizable=no");
+			popWin = window.open("/history.jsp", "popWin", "left=300, top=200, width=300, height=200, marginwidth=0, marginheight=0, scrollbars=no, scrolling=no, menubar=no, resizable=no");
 		}
 		
 	});
@@ -146,6 +149,7 @@
 
 
 	<!-- Modal -->
+	<form action="/user/login" method="POST"> 
 	<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -154,7 +158,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form>
+        
           <div class="mb-3">
             <label for="userId" class="form-label">아이디</label>
             <input type="text" class="form-control" id="userId" name="userId">
@@ -163,15 +167,17 @@
             <label for="password" class="form-label">비밀번호</label>
             <input type="password" class="form-control" id="password" name="password">
           </div>
-        </form>
+        
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary">로그인</button>
+        <button type="submit" class="btn btn-secondary">로그인</button>
         <button type="button" class="btn btn-primary">회원가입</button>
       </div>
+      
     </div>
   </div>
 </div>
+</form>
 	<!-- Jumbotron -->
 	<div class="text-center bg-white border-bottom">
 		<div class="container">

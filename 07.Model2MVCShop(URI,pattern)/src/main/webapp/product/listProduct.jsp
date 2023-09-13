@@ -82,7 +82,7 @@
 				console.log(searchConditionValue)
 				prodList.forEach(function(product) {
 					  let row = "<tr class='ct_list_pop'>" 
-				     			+"<td align='center' height='80px'><img src="+"/images/uploadFiles/"+product.fileName.replace(',','')+" width='100px' height='100px' /></td>"
+				     			+"<td align='center' height='80px'><img src="+"/images/uploadFiles/"+product.fileName+" width='100px' height='100px' /></td>"
 				      			+"<td></td>"
 				      			+"<td align='left'><a href='/product/";
 				    			if ("${param.menu}" === 'manage') {

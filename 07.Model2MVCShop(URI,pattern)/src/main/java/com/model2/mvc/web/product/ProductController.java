@@ -80,7 +80,7 @@ public class ProductController {
 		/*
 	    if (FileUpload.isMultipartContent(request)) {
 	        //String temDir =
-	          //"C:\\workspace\\07.Model2MVCShop(URI,pattern)\\src\\main\\webapp\\images\\uploadFiles";
+	          //"C:\\workspace\\07.Model2MVCShop(URI,pattern)2\\src\\main\\webapp\\images\\uploadFiles";
 	       //String temDir2= "/images/uploadFiles/";
 	    	String temDir2= request.getServletContext().getRealPath("/images/uploadFiles/");
 	        
@@ -152,7 +152,8 @@ public class ProductController {
 	        if (!file.isEmpty()) {
 	            String originalFileName = file.getOriginalFilename();
 	            String uploadPath = request.getServletContext().getRealPath("/images/uploadFiles/");
-
+	            //String uploadPath = "C:\\Users\\bitcamp\\git\\model2MVCShop\\07.Model2MVCShop(URI,pattern)\\src\\main\\webapp\\images\\uploadFiles";
+	            System.out.println("파일저장경로"+uploadPath);
 	            File uploadDir = new File(uploadPath);
 	            if (!uploadDir.exists()) {
 	                uploadDir.mkdirs(); // 디렉토리가 존재하지 않으면 생성
