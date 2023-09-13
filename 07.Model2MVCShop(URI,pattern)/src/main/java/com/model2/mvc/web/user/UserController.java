@@ -19,7 +19,6 @@ import org.springframework.web.servlet.ModelAndView;
 import com.model2.mvc.common.Page;
 import com.model2.mvc.common.Search;
 import com.model2.mvc.service.domain.User;
-import com.model2.mvc.service.product.ProductService;
 import com.model2.mvc.service.user.UserService;
 
 
@@ -33,10 +32,6 @@ public class UserController {
 	@Qualifier("userServiceImpl")
 	private UserService userService;
 	//setter Method 구현 않음
-	
-	@Autowired
-	@Qualifier("productServiceImpl")
-	private ProductService productService;
 		
 	public UserController(){
 		System.out.println(this.getClass());
@@ -251,40 +246,19 @@ public class UserController {
 	//단순 Navigation
 	//REST O
 	@RequestMapping( value="login", method=RequestMethod.POST )
-	public ModelAndView login(@ModelAttribute("user") User user ,
-								@ModelAttribute("search") Search search,
-								HttpServletRequest request,
-								HttpSession session ) throws Exception{
+	public ModelAndView login(@ModelAttribute("user") User user , HttpSession session ) throws Exception{
 		
 		System.out.println("/user/login : POST");
-		System.out.println("product/listProduct");
-		System.out.println("user는"+user);
 		//Business Logic
 		User dbUser=userService.getUser(user.getUserId());
 		
 		if( user.getPassword().equals(dbUser.getPassword())){
 			session.setAttribute("user", dbUser);
 		}
-	    System.out.println("현재페이지 수 :::::" + search.getCurrentPage());
-	    if (search.getCurrentPage() == 0) {
-	        search.setCurrentPage(1);
-	    }
-	    
-	    System.out.println("앙기모띠"+request.getParameter("menu")); 
-	    search.setPageSize(pageSize);
-	    
-	    // Business logic 수행
-	    Map<String, Object> map = productService.getProductList(search);
-	    
-	    Page resultPage = new Page(search.getCurrentPage(), ((Integer) map.get("totalCount")).intValue(), pageUnit, pageSize);
-	    System.out.println(resultPage);
 		
-	    // ModelAndView 생성 및 View, Model 설정
-	    ModelAndView modelAndView = new ModelAndView();
-	    modelAndView.setViewName("forward:/index.jsp");
-	    modelAndView.addObject("list", map.get("list"));
-	    modelAndView.addObject("resultPage", resultPage);
-	    modelAndView.addObject("search", search);
+		// Model 과 View 연결
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("redirect:/index.jsp");
 		
 		return modelAndView;
 	}
@@ -307,13 +281,13 @@ public class UserController {
 	@RequestMapping( value="logout", method=RequestMethod.GET )
 	public ModelAndView logout(HttpSession session ) throws Exception{
 		
-		System.out.println("/user/logout : GET");
+		System.out.println("/user/logout : POST");
 		
 		session.invalidate();
 		
 		// Model 과 View 연결
 		ModelAndView modelAndView = new ModelAndView();
-		modelAndView.setViewName("forward:/index.jsp");
+		modelAndView.setViewName("redirect:/index.jsp");
 		
 		return modelAndView;
 	}

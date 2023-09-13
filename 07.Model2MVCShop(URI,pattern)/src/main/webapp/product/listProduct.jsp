@@ -34,8 +34,7 @@
 	
 		$('#currentPage').val(currentPage)
 	
-		$('form').attr("method", "POST").attr("action",
-		"/product/listProduct?menu=${param.menu}").submit()
+		loadPage("/product/listProduct?menu=${param.menu}", "GET")
 	
 	}
 
@@ -93,29 +92,30 @@
 		        let resultPage = data.resultPage;
 				console.log(searchConditionValue)
 				prodList.forEach(function(product) {
-					  let row = "<tr class='ct_list_pop'>" 
-				     			+"<td align='center' height='80px'><img src="+"/images/uploadFiles/"+product.fileName+" width='100px' height='100px' /></td>"
-				      			+"<td></td>"
-				      			+"<td align='left'><a href='/product/";
-				    			if ("${param.menu}" === 'manage') {
-				      			row += "updateProduct?prodNo=" + product.prodNo + "&menu=manage";
+					  let row = "<div class='col-lg-3 col-md-6 col-sm-6 d-flex'>" 
+				     			+"<div class='card w-100 my-2 shadow-2-strong'>"
+				      			+"<a href='/product/"
+				     			if ("${param.menu}" === 'manage') {
+				     			row += "updateProduct?prodNo=" + product.prodNo + "&menu=manage";
 				    			} else if ("${param.menu}" === 'search') {
-				      			row += "getProduct?prodNo=" + product.prodNo + "&menu=search";
-				    			}
-				    			row += "'>" + product.prodName + "</a></td>"
-				      			+"<td></td>" 
-				      			+"<td align='left'>" + product.price + "</td>" 
-				      			+"<td></td>" 
+					      			row += "getProduct?prodNo=" + product.prodNo + "&menu=search";
+					    		}
+				     			row += "'>"
+				      			+"<img src='/images/uploadFiles/"+product.fileName.replace(',','')+"'"+ "class='card-img-top' style='aspect-ratio: 1 / 1' /></a>"
+				      			+"<div class='card-body d-flex flex-column'>"
+				      			+"<h5 class='card-title'>"
+				    			+"<h5 class='card-title'>"+product.prodName + "</h5>"
+				      			+"<p class='card-text'>"+product.price+"<span>"+(product.prodCount > 0 ? '판매중' : '재고 없음')+"</span></p>" 
+				      			+"<div class='card-footer d-flex align-items-end pt-3 px-0 pb-0 mt-auto'>" 
+				      			+"<a href='#!' class='btn btn-primary shadow-0 me-1'>Add to cart</a>" 
 				      			+"<td align='left'>" + formatDate(product.manuDate) + "</td>"
-				      			+"<td></td>" 
-				      			+"<td align='left'>"+(product.prodCount > 0 ? "판매중" : "재고 없음")+"</td>"
-				      			+"</tr>";
+				      			+"</div>" 
+				      			+"</div>"
+				      			+"</div>"
+				      			+"</div>";
 	
-					  $("table").eq(4).append(row);
-					  $( ".ct_list_pop td:nth-child(3)" ).css("color" , "red");
-						$("a").css("color" , "red");
-
-						$(".ct_list_pop:nth-child(even)" ).css("background-color" , "whitesmoke");
+					  $("div.row").eq(2).append(row);
+			
 					}); 
 					
 				infiniteScrollEnabled = true;
@@ -157,25 +157,76 @@
 	    }
 	});//end of Autocomplete
 	
-	$('td.ct_btn01:contains("검색")').on('click',function(){
+	$('button:contains("검색")').on('click',function(){
 		
-		console.log("하 시발")
+		
 		fncGetProductList(1)
 		
 	})
-	
-	  $( ".ct_list_pop td:nth-child(3)" ).css("color" , "red");
-	$("a").css("color" , "red");
 
-	$(".ct_list_pop:nth-child(even)" ).css("background-color" , "whitesmoke");
-})//end of jQuery
+	});//end of jQuery
 </script>
 </head>
 
 <body bgcolor="#ffffff" text="#000000">
 
 <div style="width:98%; margin-left:10px;">
+<section>
+<form name="detailForm" >
+<input type="hidden" name="currentPage" value="0" />
+<input type="hidden" name="menu" value="${param.menu}" />
+  <div class="container my-5">
+ <nav class="navbar row">
+  <div class="container-fluid">
+    <h3 class="relative position-relative">${param.menu eq 'manage' ? "상품관리" : "상품목록조회"}</h3>
 
+	<div class="row">
+	  <div class="col-4"> <!-- 너비 조절 -->
+	    <select class="w-100 form-select" name="searchCondition">
+	      <option value="0" ${ ! empty search.searchCondition && search.searchCondition==0 ? "selected" : "" }>상품번호</option>
+	      <option value="1" ${ ! empty search.searchCondition && search.searchCondition==1 ? "selected" : "" }>상품명</option>
+	      <option value="2" ${ ! empty search.searchCondition && search.searchCondition==2 ? "selected" : "" }>상품가격</option>
+	    </select>
+	  </div>
+	  <div class="col-8 d-flex"> <!-- 너비 조절 -->
+	    <input class="form-control w-100" type="text" name="searchKeyword" value="${! empty search.searchKeyword ? search.searchKeyword : '' }">
+	     <button class="btn btn-outline-info w-50 text-14" type="button">검색</button>
+	  </div>
+	</div>
+  </div>
+</nav>
+
+    <div class="row">
+    <c:forEach var="product" items="${list}">
+      <div class="col-lg-3 col-md-6 col-sm-6 d-flex">
+        <div class="card w-100 my-2 shadow-2-strong">
+          <img src="/images/uploadFiles/${product.fileName.replace(',','')}" class="card-img-top" style="aspect-ratio: 1 / 1" />
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title">GoPro HERO6 4K Action Camera - Black</h5>
+            <p class="card-text">${product.price}</p>
+            <div class="card-footer d-flex align-items-end pt-3 px-0 pb-0 mt-auto">
+              <a href="#!" class="btn btn-primary shadow-0 me-1">Add to cart</a>
+              	<c:if test="${param.menu eq 'manage'}">
+					<a href="/product/updateProduct?prodNo=${product.prodNo}&menu='manage'" class="btn btn-light border px-2 pt-2 icon-hover">${product.prodName}</a>
+				</c:if>
+				<c:if test="${param.menu eq 'search'}">
+					<a href="/product/getProduct?prodNo=${product.prodNo}&menu='search'" class="btn btn-light border px-2 pt-2 icon-hover">${product.prodName}</a>
+				</c:if>
+            </div>
+          </div>
+        </div>
+      </div>
+      </c:forEach>
+    </div>
+  </div>
+  </form>
+</section>
+<!-- Products -->
+
+
+
+
+<!-- 
 <form name="detailForm" >
 <input type="hidden" name="currentPage" value="0" />
 <input type="hidden" name="menu" value="${param.menu}" />
@@ -278,7 +329,7 @@
 		</c:forEach>
 </table>
 </form>
-
+ -->
 </div>
 </body>
 </html>
