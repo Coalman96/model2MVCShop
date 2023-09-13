@@ -40,7 +40,7 @@
 	//==> jQuery 적용 추가된 부분
 	$(document).ready(function() {
 
-		$('form[name="detailForm"]').attr("method", "POST").attr("action","/product/listProduct?menu=${param.menu}").submit()
+		//$('form[name="detailForm"]').attr("method", "POST").attr("action","/product/listProduct?menu=${param.menu}").submit()
 
 
 		  
@@ -259,7 +259,7 @@
 	
 	$('button:contains("검색")').on('click',function(){
 		
-		console.log("하 시발")
+		
 		fncGetProductList(1)
 		
 	})
