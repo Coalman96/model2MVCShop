@@ -366,7 +366,7 @@ public class ProductController {
 	    
 	    // ModelAndView 생성 및 View, Model 설정
 	    ModelAndView modelAndView = new ModelAndView();
-	    modelAndView.setViewName("forward:/product/listProduct.jsp");
+	    modelAndView.setViewName("forward:/index.jsp");
 	    modelAndView.addObject("list", map.get("list"));
 	    modelAndView.addObject("resultPage", resultPage);
 	    modelAndView.addObject("search", search);
