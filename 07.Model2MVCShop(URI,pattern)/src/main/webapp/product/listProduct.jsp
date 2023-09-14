@@ -58,6 +58,9 @@
 		  let scrollHeight = document.documentElement.scrollHeight;
 		  let scrollPosition = window.innerHeight + window.scrollY;
 
+		    console.log($(window).height())
+		    console.log(scrollHeight)
+		  
 		// 무한 스크롤 활성화 상태에서 스크롤이 일정 위치에 도달하면 데이터를 가져옴
 		  if (infiniteScrollEnabled && (scrollHeight - scrollPosition) / scrollHeight === 0) {
 		    infiniteScrollEnabled = false; // 중복 요청을 막기 위해 활성화 상태를 비활성화로 변경
@@ -108,7 +111,7 @@
 				      			+"<p class='card-text'>"+product.price+"<span>"+(product.prodCount > 0 ? '판매중' : '재고 없음')+"</span></p>" 
 				      			+"<div class='card-footer d-flex align-items-end pt-3 px-0 pb-0 mt-auto'>" 
 				      			+"<a href='#!' class='btn btn-primary shadow-0 me-1'>Add to cart</a>" 
-				      			+"<td align='left'>" + formatDate(product.manuDate) + "</td>"
+				      			+"<span class='btn btn-light border px-2 pt-2 icon-hover'>"+product.prodName+"</span>"
 				      			+"</div>" 
 				      			+"</div>"
 				      			+"</div>"
@@ -200,18 +203,22 @@
     <c:forEach var="product" items="${list}">
       <div class="col-lg-3 col-md-6 col-sm-6 d-flex">
         <div class="card w-100 my-2 shadow-2-strong">
-          <img src="/images/uploadFiles/${product.fileName.replace(',','')}" class="card-img-top" style="aspect-ratio: 1 / 1" />
+        <c:if test="${param.menu eq 'manage'}">
+       		<a href="/product/updateProduct?prodNo=${product.prodNo}&menu='manage'" >
+        		<img src="/images/uploadFiles/${product.fileName.replace(',','')}" class="card-img-top" style="aspect-ratio: 1 / 1" />
+       		</a>
+        </c:if>
+        <c:if test="${param.menu eq 'search'}">
+       		<a href="/product/getProduct?prodNo=${product.prodNo}&menu='search'">
+     	  		<img src="/images/uploadFiles/${product.fileName.replace(',','')}" class="card-img-top" style="aspect-ratio: 1 / 1" />
+     		</a>
+        </c:if>
           <div class="card-body d-flex flex-column">
             <h5 class="card-title">GoPro HERO6 4K Action Camera - Black</h5>
             <p class="card-text">${product.price}</p>
             <div class="card-footer d-flex align-items-end pt-3 px-0 pb-0 mt-auto">
               <a href="#!" class="btn btn-primary shadow-0 me-1">Add to cart</a>
-              	<c:if test="${param.menu eq 'manage'}">
-					<a href="/product/updateProduct?prodNo=${product.prodNo}&menu='manage'" class="btn btn-light border px-2 pt-2 icon-hover">${product.prodName}</a>
-				</c:if>
-				<c:if test="${param.menu eq 'search'}">
-					<a href="/product/getProduct?prodNo=${product.prodNo}&menu='search'" class="btn btn-light border px-2 pt-2 icon-hover">${product.prodName}</a>
-				</c:if>
+					<span class="btn btn-light border px-2 pt-2 icon-hover">${product.prodName}</span>
             </div>
           </div>
         </div>

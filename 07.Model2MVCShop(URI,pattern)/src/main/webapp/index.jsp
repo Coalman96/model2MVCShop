@@ -12,25 +12,24 @@
 	.bg-primary{
 		
 		background-image: url("/images/ima112.jpg");
+		background-repeat: no-repeat;
+		background-size: contain;
 	
 	}
 
 </style>
 <!-- jQuery UI CDN(Content Delivery Network) 호스트 사용 -->
-<link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
 <!-- CDN(Content Delivery Network) 호스트 사용 -->
 <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
 <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
 <!-- bootstrap CDN -->
 <link
 	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css"
 	rel="stylesheet"
 	integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9"
 	crossorigin="anonymous">
-<script
-	src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
-	integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
-	crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
 <link rel="stylesheet"
 	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
 <script type="text/javascript">
@@ -111,7 +110,6 @@
 			    }
 			  });
 		  }
-
 		$("button.btn-primary").eq(0).on("click", function() {
 			
 			  self.location = "/user/addUser";
@@ -126,10 +124,17 @@
 		});
 		
 		//navigation
+		$( "a.nav-link:contains('판매상품등록')" ).on("click" , function() {
+
+			self.location ="/product/addProductView"
+	 		//loadPage("/product/addProductView", "GET");
+	 		
+		});
+		
 		$( "a.nav-link:contains('개인정보조회')" ).on("click" , function() {
 
 			loadPage("/user/getUser?userId=${user.userId}", "GET");
-			console.log("아시발")
+			
 		});
 		
 	 	$( "a.nav-link:contains('회원정보조회')" ).on("click" , function() {
@@ -138,11 +143,6 @@
 	 		
 		}); 
 	 	
-	 	$( "a.nav-link:contains('판매상품등록')" ).on("click" , function() {
-
-	 		loadPage("../product/addProductView.jsp", "GET");
-	 		
-		});
 	 	
 	 	$( "a.nav-link:contains('판매상품관리')" ).on("click" , function() {
 	 		
@@ -177,28 +177,17 @@
 		function history(){
 			popWin = window.open("/history.jsp", "popWin", "left=300, top=200, width=300, height=200, marginwidth=0, marginheight=0, scrollbars=no, scrolling=no, menubar=no, resizable=no");
 		}
-		//기존 listProduct 부분
-		function fncGetProductList(currentPage) {
-			
-			if (currentPage == undefined) {
-				currentPage = 1;
-			}
 		
-			$('#currentPage').val(currentPage)
-		
-			loadPage("/product/listProduct?menu=${param.menu}", "GET")
-
-		
-		}
 
 	$('button:contains("검색")').on('click',function(){
 		
 		
-		fncGetProductList(1)
+		loadPage("/product/listProduct?menu=${param.menu}", "GET")
 		
 	})
 
 	});//end of jQuery
+
 </script>
 
 </head>
@@ -319,22 +308,37 @@
 	</nav>
 	<!-- Navbar -->
 	<!-- Jumbotron -->
+	
 	<div class="bg-primary text-white py-5">
 		<div class="container py-5">
 			<h1 class="text-black">
 				Accelerando
 			</h1>
-			<p class="text-black">전주식당 수저 상습절도범 김형구</p>
-			<button type="button" class="btn btn-outline-light">더보기</button>
-			<button type="button"
-				class="btn btn-light shadow-0 text-primary pt-2 border border-white">
-				<span class="pt-1">신고하기</span>
-			</button>
+			<p class="text-black">
+			We pursue the casual bike life more than the hardcore riding.
+			<br>
+			<br>
+			We suggest the more comfortable, more convenient and trendy street riding style.
+			<br>
+			<br>
+			We continuously research and develop accelerando's unique items with various utilities.
+</p>
 		</div>
 	</div>
 	<!-- Jumbotron -->
 </header>
-<<div id="bottomContent">
+<div id="bottomContent">
 </div> 
-
+<div class="container">
+  <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
+    <div class="col-md-4 d-flex align-items-center">
+      <a href="/" class="mb-3 me-2 mb-md-0 text-body-secondary text-decoration-none lh-1">
+        <svg class="bi" width="30" height="24"><use xlink:href="#bootstrap"/></svg>
+      </a>
+      <span class="mb-3 mb-md-0 text-body-secondary">&copy; 2023 Company, Inc</span>
+    </div>
+	
+	<p >ㅁㄴㅇㅁㄴㅇ</p>
+  </footer>
+</div>
 </html>

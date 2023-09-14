@@ -44,11 +44,15 @@
 				let infiniteScrollEnabled = true;
 
 				// 스크롤 이벤트 핸들러
-				$(window).scroll(function() {
-				    // 스크롤바 위치
-				    let scrollHeight = $(document).height();
-				    let scrollPosition = $(window).height() + $(window).scrollTop();
+				window.addEventListener("scroll", function() {
+					// 스크롤바 위치
+				  let scrollHeight = document.documentElement.scrollHeight;
+				  let scrollPosition = window.innerHeight + window.scrollY;
 
+				    console.log($(window).height())
+				    console.log(scrollHeight)
+				    
+				    
 				    // 무한 스크롤 활성화 상태에서 스크롤이 일정 위치에 도달하면 데이터를 가져옴
 				    if (infiniteScrollEnabled && (scrollHeight - scrollPosition) / scrollHeight === 0) {
 				        infiniteScrollEnabled = false; // 중복 요청을 막기 위해 활성화 상태를 비활성화로 변경
@@ -284,7 +288,7 @@
 					<tr class="ct_list_pop" >
 						<td align="center"height="80px">${ i }</td>
 						<td></td>
-						<td align="left">${user.userId}11</td>
+						<td align="left">${user.userId}</td>
 						<td></td>
 						<td align="left">${user.userName}</td>
 						<td></td>

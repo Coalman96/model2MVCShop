@@ -92,7 +92,7 @@ public class UserController {
 		
 		// Model °ú View ¿¬°á
 		ModelAndView modelAndView = new ModelAndView();
-		modelAndView.setViewName("redirect:/user/loginView.jsp");
+		modelAndView.setViewName("redirect:/index.jsp");
 
 		
 		return modelAndView;

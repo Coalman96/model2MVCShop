@@ -186,6 +186,18 @@ public class ProductController {
 	    
 	    return modelAndView;
 	}
+	
+	@RequestMapping(value="addProductView", method=RequestMethod.GET)
+	public ModelAndView addProductView() throws Exception {
+		
+	    System.out.println("/product/addProductView");
+
+	    // Model°ú View ¿¬°á
+	    ModelAndView modelAndView = new ModelAndView();
+	    modelAndView.setViewName("redirect:/product/addProductView.jsp");
+	    
+	    return modelAndView;
+	}
 
 	
 	/* String return Type

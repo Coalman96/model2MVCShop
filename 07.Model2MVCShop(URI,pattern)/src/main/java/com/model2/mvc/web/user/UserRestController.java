@@ -88,7 +88,7 @@ public class UserRestController {
 	@RequestMapping( value="json/checkDuplication/{userId}", method=RequestMethod.POST )
 	public Map checkDuplication( @PathVariable String userId ) throws Exception{
 		
-		System.out.println("/user/json/checkDuplication : POST");
+		System.out.println("/user/json/checkDuplication : POST"+userId);
 		
 		//Business Logic
 		boolean result=userService.checkDuplication(userId);
