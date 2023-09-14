@@ -42,7 +42,7 @@
 			
 			 $("#userId").on("input", function() {
 			        var userId = $(this).val();
-			        if (userId === "") {
+			        if (userId === "" && userId.length <=2) {
 			            $("strong.text-danger").eq(0).html("아이디는 3글자 이상 입력해야합니다."); // 아무 내용도 표시하지 않음
 			            return;
 			        }
@@ -53,10 +53,10 @@
 			            method: "POST",
 			            data: { userId: userId },
 			            success: function(response) {
-			                if (response.result && response.userId.length >=3) {
-			                	 $("strong.text-danger").eq(0).html("사용 가능한 아이디입니다.");
-			                } else {
+			                if (!response.result) {
 			                	 $("strong.text-danger").eq(0).html("이미 사용 중인 아이디입니다.");
+			                } else if(response.result && userId.length > 2) {
+			                	 $("strong.text-danger").eq(0).html("사용 가능한 아이디입니다.");
 			                }
 			            },
 			            error: function() {

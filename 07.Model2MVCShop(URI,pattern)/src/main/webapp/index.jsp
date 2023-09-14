@@ -1,344 +1,249 @@
-<%@ page contentType="text/html; charset=UTF-8" %>
+<%@ page contentType="text/html; charset=UTF-8"%>
 <%@ page pageEncoding="UTF-8"%>
 
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
 <html>
 <head>
 <title>Model2 MVC Shop</title>
 
-<style type="text/css">
-	
-	.bg-primary{
-		
-		background-image: url("/images/ima112.jpg");
-		background-repeat: no-repeat;
-		background-size: contain;
-	
-	}
-
-</style>
+<link rel="stylesheet" href="/css/admin.css" type="text/css">
 <!-- jQuery UI CDN(Content Delivery Network) 호스트 사용 -->
+<link rel="stylesheet"
+	href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
 <!-- CDN(Content Delivery Network) 호스트 사용 -->
 <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
 <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
-<link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
 <!-- bootstrap CDN -->
 <link
 	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css"
 	rel="stylesheet"
 	integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9"
 	crossorigin="anonymous">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+<script
+	src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+	integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+	crossorigin="anonymous"></script>
 <link rel="stylesheet"
 	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
 <script type="text/javascript">
-
-
-
-	//==> jQuery 적용 추가된 부분
-	$(document).ready(function() {
-
-		
-		  // JavaScript를 사용하여 페이지 로드
-		  /*
-		  function loadPage(pageUrl,method) {
-		    var xhttp = new XMLHttpRequest();
-		    xhttp.onreadystatechange = function() {
-		      if (this.readyState == 4 && this.status == 200) {
-		        document.getElementById("bottomContent").innerHTML = this.responseText;
-		      }
-		    };
-		    if(method === "GET"){
-		    	
-		    	xhttp.open("GET", pageUrl, false);
-		    	
-		    }else if(method === "POST"){
-		    	
-		    	xhttp.open("POST", pageUrl, false);
-		    	
-		    }
-		    
-		    xhttp.send();
-		  }
-		  */
-		  
-		  
-		    <c:forEach var="product" items="${list}">
-		    
-	      <div class="col-lg-3 col-md-6 col-sm-6 d-flex">
-	        <div class="card w-100 my-2 shadow-2-strong">
-	          <img src="/images/uploadFiles/${product.fileName.replace(',','')}" class="card-img-top" style="aspect-ratio: 1 / 1" />
-	          
-	          <div class="card-body d-flex flex-column">
-	            <h5 class="card-title">GoPro HERO6 4K Action Camera - Black</h5>
-	            <p class="card-text">${product.price}</p>
-	            
-	            <div class="card-footer d-flex align-items-end pt-3 px-0 pb-0 mt-auto">
-	              <a href="#!" class="btn btn-primary shadow-0 me-1">Add to cart</a>
-	              	<c:if test="${param.menu eq 'manage'}">
-						<a href="/product/updateProduct?prodNo=${product.prodNo}&menu='manage'" class="btn btn-light border px-2 pt-2 icon-hover">${product.prodName}</a>
-					</c:if>
-					<c:if test="${param.menu eq 'search'}">
-						<a href="/product/getProduct?prodNo=${product.prodNo}&menu='search'" class="btn btn-light border px-2 pt-2 icon-hover">${product.prodName}</a>
-					</c:if>
-	            </div>
-	          </div>
-	        </div>
-	      </div>
-	      
-	      </c:forEach>
-		  
-		  
-		  
-		  
-		  
-		  
-		  loadPage("/product/listProduct?menu=search", "GET");
-		  function loadPage(modulePath,method) {
-			  // Ajax를 사용하여 모듈 로드
-			  $.ajax({
-			    url: modulePath,
-			    type: method,
-			    success: function(data) {
-			      // 모듈 로드 성공 시 컨테이너 업데이트
-			      $("#bottomContent").html(data);
-			    },
-			    error: function() {
-			      // 모듈 로드 실패 시 처리
-			      $("#bottomContent").html("모듈을 로드하는 데 문제가 발생했습니다.");
-			    }
-			  });
-		  }
-		$("button.btn-primary").eq(0).on("click", function() {
-			
-			  self.location = "/user/addUser";
-			  
+	//loadPage("/product/listProduct?menu=search", "GET");
+	function loadPage(modulePath, method) {
+		// Ajax를 사용하여 모듈 로드
+		$.ajax({
+			url : modulePath,
+			type : method,
+			success : function(data) {
+				// 모듈 로드 성공 시 컨테이너 업데이트
+				$("#bottomContent").html(data);
+			},
+			error : function() {
+				// 모듈 로드 실패 시 처리
+				$("#bottomContent").html("모듈을 로드하는 데 문제가 발생했습니다.");
+			}
 		});
-		
-		
-		$("i.bi-door-open").on("click", function() {
-			
-			 self.location ="/user/logout"
-			
-		});
-		
-		//navigation
-		$( "a.nav-link:contains('판매상품등록')" ).on("click" , function() {
-
-			self.location ="/product/addProductView"
-	 		//loadPage("/product/addProductView", "GET");
-	 		
-		});
-		
-		$( "a.nav-link:contains('개인정보조회')" ).on("click" , function() {
-
-			loadPage("/user/getUser?userId=${user.userId}", "GET");
-			
-		});
-		
-	 	$( "a.nav-link:contains('회원정보조회')" ).on("click" , function() {
-
-	 		loadPage("/user/listUser" , "GET");
-	 		
-		}); 
-	 	
-	 	
-	 	$( "a.nav-link:contains('판매상품관리')" ).on("click" , function() {
-	 		
-	 		loadPage("/product/listProduct?menu=manage", "GET");
-	 		
-		}); 
-	 	
-	 	$( "a.nav-link:contains('상품검색')" ).on("click" , function() {
-	 		
-	 		loadPage("/product/listProduct?menu=search", "GET");
-	 		
-		});
-	 	
-	 	$( "a.nav-link:contains('구매이력조회')" ).on("click" , function() {
-	 		
-	 		loadPage("/purchase/listPurchase?menu=search", "GET");
-	 		
-		}); 
-	 	
-	 	$( "a.nav-link:contains('배송관리')" ).on("click" , function() {
-	 		
-	 		loadPage("/purchase/listPurchase?menu=manage", "GET");
-	 		
-		});
-	 	
-	 	$( "a.nav-link:contains('최근본상품')" ).on("click" , function() {
-
-	 		history()
-	 		
-		}); 
-
-		function history(){
-			popWin = window.open("/history.jsp", "popWin", "left=300, top=200, width=300, height=200, marginwidth=0, marginheight=0, scrollbars=no, scrolling=no, menubar=no, resizable=no");
-		}
-		
-
-	$('button:contains("검색")').on('click',function(){
-		
-		
-		loadPage("/product/listProduct?menu=${param.menu}", "GET")
-		
-	})
-
-	});//end of jQuery
-
+	}
 </script>
-
 </head>
-
-<header>
-
-
-	<!-- Modal -->
-	<form action="/user/login" method="POST"> 
-	<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">환영합니다</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        
-          <div class="mb-3">
-            <label for="userId" class="form-label">아이디</label>
-            <input type="text" class="form-control" id="userId" name="userId">
-          </div>
-          <div class="mb-3">
-            <label for="password" class="form-label">비밀번호</label>
-            <input type="password" class="form-control" id="password" name="password">
-          </div>
-        
-      </div>
-      <div class="modal-footer">
-        <button type="submit" class="btn btn-secondary">로그인</button>
-        <button type="button" class="btn btn-primary">회원가입</button>
-      </div>
-      
-    </div>
-  </div>
-</div>
-</form>
+<body>
+	<!-- ToolBar Start /////////////////////////////////////-->
+	<jsp:include page="/layout/toolbar.jsp" />
+	<!-- ToolBar End /////////////////////////////////////-->
 	<!-- Jumbotron -->
-	<div class="text-center bg-white border-bottom">
-		<div class="container">
-			<div class="row gy-3 d-flex justify-content-between">
-				<!-- Left elements -->
-				<div class="col-lg-2 col-sm-4 col-4">
-					<a href="" target="_blank" class="float-start"> <img
-						src="https://avatars.githubusercontent.com/u/96984831?v=4"
-						height="50" width="50" />
-					</a>
-				</div>
-				<!-- Left elements -->
-
-				<!-- Right elements -->
-				<div class="d-flex order-lg-last col-lg-5 col-sm-8 col-8 text-end justify-content-end align-items-center">
-					<div class="flex-end ">
-					<c:if test="${ empty user }">
-		              <!-- Button trigger modal -->
-						<button type="button" class="btn btn-primary"
-							data-bs-toggle="modal" data-bs-target="#exampleModal">
-							<i class="bi bi-person-circle" style="font-size: 25px;"></i>
-						</button>
-		            </c:if>   
-		            <c:if test="${ ! empty user }">
-		           <i class="bi bi-door-open" style="font-size:25px; font-style:normal;">Logout</i>
-		           </c:if>
-					</div>
-				</div>
-				<!-- Right elements -->
-
-
-			</div>
-		</div>
-	</div>
-	<!-- Jumbotron -->
-
-	<!-- Navbar -->
-	<nav class="navbar navbar-expand-lg navbar-light bg-white">
-		<!-- Container wrapper -->
-		<div class="container justify-content-center justify-content-md-between">
-			<!-- Toggle button -->
-			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarLeftAlignExample" aria-controls="navbarLeftAlignExample" aria-expanded="false" aria-label="Toggle navigation">
-   			   <span class="navbar-toggler-icon"></span>
-   			</button>
-
-			<!-- Collapsible wrapper -->
-			<div class="collapse navbar-collapse" id="navbarLeftAlignExample">
-				<!-- Left links -->
-				<ul class="navbar-nav me-auto mb-2 mb-lg-0">
-					<li class="nav-item"><a class="nav-link text-dark" href="#">상품검색</a></li>
-					<c:if test="${ ! empty user }">
-					<li class="nav-item"><a class="nav-link text-dark"
-						aria-current="page" href="#">개인정보조회</a></li>
-					</li>
-					<c:if test="${user.role == 'admin'}">
-					<li class="nav-item"><a class="nav-link text-dark" href="#">회원정보조회</a>
-					<li class="nav-item"><a class="nav-link text-dark" href="#">판매상품등록</a></li>
-					<li class="nav-item"><a class="nav-link text-dark" href="#">판매상품관리</a></li>
-					</c:if>
-					<c:if test="${user.role == 'user'}">
-					<li class="nav-item"><a class="nav-link text-dark" href="#">구매이력조회</a></li>
-					</c:if>
-					<li class="nav-item"><a class="nav-link text-dark" href="#">배송관리</a></li>
-					
-					</c:if>
-					<!-- Navbar dropdown -->
-					<li class="nav-item dropdown">
-			          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-			            기타
-			          </a>
-			          <ul class="dropdown-menu">
-			            <li><a class="dropdown-item" href="#">최근 본 상품</a></li>
-			            <!-- <li><hr class="dropdown-divider"></li> -->
-			          </ul>
-			        </li>
-				</ul>
-				<!-- Left links -->
-			</div>
-		</div>
-		<!-- Container wrapper -->
-	</nav>
-	<!-- Navbar -->
-	<!-- Jumbotron -->
-	
 	<div class="bg-primary text-white py-5">
 		<div class="container py-5">
-			<h1 class="text-black">
-				Accelerando
+			<h1>
+				비트캠프 <br /> DevOps 2기
 			</h1>
-			<p class="text-black">
-			We pursue the casual bike life more than the hardcore riding.
-			<br>
-			<br>
-			We suggest the more comfortable, more convenient and trendy street riding style.
-			<br>
-			<br>
-			We continuously research and develop accelerando's unique items with various utilities.
-</p>
+			<p>Mini Project</p>
 		</div>
 	</div>
 	<!-- Jumbotron -->
-</header>
-<div id="bottomContent">
-</div> 
-<div class="container">
-  <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
-    <div class="col-md-4 d-flex align-items-center">
-      <a href="/" class="mb-3 me-2 mb-md-0 text-body-secondary text-decoration-none lh-1">
-        <svg class="bi" width="30" height="24"><use xlink:href="#bootstrap"/></svg>
-      </a>
-      <span class="mb-3 mb-md-0 text-body-secondary">&copy; 2023 Company, Inc</span>
-    </div>
-	
-	<p >ㅁㄴㅇㅁㄴㅇ</p>
-  </footer>
-</div>
+	<!-- Feature -->
+	<section class="mt-5" style="background-color: #f5f5f5;">
+		<div class="container text-dark pt-3">
+			<header class="pt-4 pb-3">
+				<h3>BitCamp</h3>
+			</header>
+
+			<div class="row mb-4">
+				<div class="col-lg-4 col-md-6">
+					<figure class="d-flex align-items-center mb-4">
+						<span class="rounded-circle bg-white p-3 d-flex me-2 mb-2">
+							<i class="bi bi-1-circle-fill"  style="font-size:35px; color: cornflowerblue;"></i>
+						</span>
+						<figcaption class="info">
+							<h6 class="title">당일·새벽·익일 직배송</h6>
+							<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit
+								sed do eiusmor</p>
+						</figcaption>
+					</figure>
+					<!-- itemside // -->
+				</div>
+				<!-- col // -->
+				<div class="col-lg-4 col-md-6">
+					<figure class="d-flex align-items-center mb-4">
+						<span class="rounded-circle bg-white p-3 d-flex me-2 mb-2">
+							<i class="bi bi-2-circle-fill" style="font-size:35px; color: cornflowerblue;"></i>
+						</span>
+						<figcaption class="info">
+							<h6 class="title">자정 전 주문, 새벽에 도착</h6>
+							<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit
+								sed do eiusmor</p>
+						</figcaption>
+					</figure>
+					<!-- itemside // -->
+				</div>
+				<!-- col // -->
+				<div class="col-lg-4 col-md-6">
+					<figure class="d-flex align-items-center mb-4">
+						<span class="rounded-circle bg-white p-3 d-flex me-2 mb-2">
+								<i class="bi bi-3-circle-fill" style="font-size:35px; color: cornflowerblue;"></i>
+						</span>
+						<figcaption class="info">
+							<h6 class="title">해외 직구도 무료배송</h6>
+							<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit
+								sed do eiusmor</p>
+						</figcaption>
+					</figure>
+					<!-- itemside // -->
+				</div>
+				<!-- col // -->
+				<div class="col-lg-4 col-md-6">
+					<figure class="d-flex align-items-center mb-4">
+						<span class="rounded-circle bg-white p-3 d-flex me-2 mb-2">
+							<i class="bi bi-4-circle-fill" style="font-size:35px; color: cornflowerblue;"></i>
+						</span>
+						<figcaption class="info">
+							<h6 class="title">더 좋은 식사의 시작</h6>
+							<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit
+								sed do eiusmor</p>
+						</figcaption>
+					</figure>
+					<!-- itemside // -->
+				</div>
+				<!-- col // -->
+				<div class="col-lg-4 col-md-6">
+					<figure class="d-flex align-items-center mb-4">
+						<span class="rounded-circle bg-white p-3 d-flex me-2 mb-2">
+							<i class="bi bi-5-circle-fill" style="font-size:35px; color: cornflowerblue;"></i>
+						</span>
+						<figcaption class="info">
+							<h6 class="title">알찬 콘텐츠 라인업</h6>
+							<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit
+								sed do eiusmor</p>
+						</figcaption>
+					</figure>
+					<!-- itemside // -->
+				</div>
+				<!-- col // -->
+				<div class="col-lg-4 col-md-6">
+					<figure class="d-flex align-items-center mb-4">
+						<span class="rounded-circle bg-white p-3 d-flex me-2 mb-2">
+							<i class="bi bi-6-circle-fill" style="font-size:35px; color: cornflowerblue;"></i>
+						</span>
+						<figcaption class="info">
+							<h6 class="title">친환경 프레시백으로 배송</h6>
+							<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit
+								sed do eiusmor</p>
+						</figcaption>
+					</figure>
+					<!-- itemside // -->
+				</div>
+				<!-- col // -->
+			</div>
+		</div>
+		<!-- container end.// -->
+	</section>
+	<!-- Feature -->
+
+	<!-- Blog -->
+	<section class="mt-5 mb-4">
+		<div class="container text-dark">
+			<header class="mb-4">
+				<h3>News</h3>
+			</header>
+
+			<div class="row">
+				<div class="col-lg-3 col-md-6 col-sm-6 col-12">
+					<article>
+						<a href="#" class="img-fluid"> <img class="rounded w-100"
+							src="/images/uploadFiles/qqqq.png"
+							style="object-fit: cover;" height="160" />
+						</a>
+						<div class="mt-2 text-muted small d-block mb-1">
+							<span> <i class="fa fa-calendar-alt fa-sm"></i> 2023.09.15
+							</span> <a href="#"><h6 class="text-dark">DevOps 2기 반장</h6></a>
+							<p>"반장으로서 모범을 보이겠습니다."</p>
+						</div>
+					</article>
+				</div>
+				<!-- col.// -->
+				<div class="col-lg-3 col-md-6 col-sm-6 col-12">
+					<article>
+						<a href="#" class="img-fluid"> <img class="rounded w-100"
+							src="https://bootstrap-ecommerce.com/bootstrap5-ecommerce/images/posts/2.webp"
+							style="object-fit: cover;" height="160" />
+						</a>
+						<div class="mt-2 text-muted small d-block mb-1">
+							<span> <i class="fa fa-calendar-alt fa-sm"></i> 2023.09.15
+							</span> <a href="#"><h6 class="text-dark">How we handle
+									shipping</h6></a>
+							<p>When you enter into any new area of science, you almost
+								reach</p>
+						</div>
+					</article>
+				</div>
+				<!-- col.// -->
+				<div class="col-lg-3 col-md-6 col-sm-6 col-12">
+					<article>
+						<a href="#" class="img-fluid"> <img class="rounded w-100"
+							src="https://bootstrap-ecommerce.com/bootstrap5-ecommerce/images/posts/3.webp"
+							style="object-fit: cover;" height="160" />
+						</a>
+						<div class="mt-2 text-muted small d-block mb-1">
+							<span> <i class="fa fa-calendar-alt fa-sm"></i> 2023.09.15
+							</span> <a href="#"><h6 class="text-dark">How to promote brands</h6></a>
+							<p>When you enter into any new area of science, you almost
+								reach</p>
+						</div>
+					</article>
+				</div>
+				<!-- col.// -->
+				<div class="col-lg-3 col-md-6 col-sm-6 col-12">
+					<article>
+						<a href="#" class="img-fluid"> <img class="rounded w-100"
+							src="/images/uploadFiles/rrrr.png"
+							style="object-fit: contain;" height="160" />
+						</a>
+						<div class="mt-2 text-muted small d-block mb-1">
+							<span> <i class="fa fa-calendar-alt fa-sm"></i> 2023.09.15
+							</span> <a href="#"><h6 class="text-dark">업계 대체불가 최고의 강사님</h6></a>
+							<p>"오늘 나의 불행은 언젠가 내가 잘못 보낸 시간의 보복이다"</p>
+						</div>
+					</article>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- Blog -->
+
+	<!-- <div id="bottomContent"></div> -->
+	<div class="container">
+
+		<footer
+			class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
+			<div class="col-md-4 d-flex align-items-center">
+				<a href="/"
+					class="mb-3 me-2 mb-md-0 text-body-secondary text-decoration-none lh-1">
+					<svg class="bi" width="30" height="24">
+						<use xlink:href="#bootstrap" /></svg>
+				</a> <span class="mb-3 mb-md-0 text-body-secondary">&copy; 2023
+					BitCamp</span>
+			</div>
+
+			<p>R.I.P 김찬우</p>
+		</footer>
+	</div>
+</body>
 </html>

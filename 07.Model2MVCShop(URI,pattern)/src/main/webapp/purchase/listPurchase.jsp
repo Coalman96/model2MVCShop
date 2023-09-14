@@ -261,7 +261,7 @@
 						style="padding-left: 10px;">
 						<table width="100%" border="0" cellspacing="0" cellpadding="0">
 							<tr>
-								<td width="93%" class="ct_ttl01">${param.menu eq 'manage' ? "硅价包府" : "备概格废 炼雀"}</td>
+								<td width="93%" class="ct_ttl01">${user.role eq 'admin' ? "硅价包府" : "备概格废 炼雀"}</td>
 							</tr>
 						</table>
 					</td>

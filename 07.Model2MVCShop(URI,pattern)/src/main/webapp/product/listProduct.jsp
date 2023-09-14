@@ -34,8 +34,9 @@
 	
 		$('#currentPage').val(currentPage)
 	
-		loadPage("/product/listProduct?menu=${param.menu}", "GET")
-	
+		//loadPage("/product/listProduct?menu=${param.menu}", "GET")
+					$('form').attr("method", "POST").attr("action",
+		"/product/listProduct?menu=${param.menu}").submit()
 	}
 
 	
@@ -172,10 +173,12 @@
 </head>
 
 <body bgcolor="#ffffff" text="#000000">
-
+	<!-- ToolBar Start /////////////////////////////////////-->
+	<jsp:include page="/layout/toolbar.jsp" />
+   	<!-- ToolBar End /////////////////////////////////////-->
+ <form name="detailForm" >
 <div style="width:98%; margin-left:10px;">
 <section>
-<form name="detailForm" >
 <input type="hidden" name="currentPage" value="0" />
 <input type="hidden" name="menu" value="${param.menu}" />
   <div class="container my-5">
@@ -193,7 +196,7 @@
 	  </div>
 	  <div class="col-8 d-flex"> <!-- 너비 조절 -->
 	    <input class="form-control w-100" type="text" name="searchKeyword" value="${! empty search.searchKeyword ? search.searchKeyword : '' }">
-	     <button class="btn btn-outline-info w-50 text-14" type="button">검색</button>
+	     <button class="btn btn-outline-info w-50 text-14" type="submit">검색</button>
 	  </div>
 	</div>
   </div>
@@ -226,117 +229,10 @@
       </c:forEach>
     </div>
   </div>
-  </form>
+
 </section>
-<!-- Products -->
-
-
-
-
-<!-- 
-<form name="detailForm" >
-<input type="hidden" name="currentPage" value="0" />
-<input type="hidden" name="menu" value="${param.menu}" />
-<table width="100%" height="37" border="0" cellpadding="0"	cellspacing="0">
-	<tr>
-		<td width="15" height="37">
-			<img src="/images/ct_ttl_img01.gif" width="15" height="37"/>
-		</td>
-		<td background="/images/ct_ttl_img02.gif" width="100%" style="padding-left:10px;">
-			<table width="100%" border="0" cellspacing="0" cellpadding="0">
-				<tr>
-					<td width="93%" class="ct_ttl01">
-					${param.menu eq 'manage' ? "상품관리" : "상품목록조회"}
-					</td>
-				</tr>
-			</table>
-		</td>
-		<td width="12" height="37">
-			<img src="/images/ct_ttl_img03.gif" width="12" height="37"/>
-		</td>
-	</tr>
-</table>
-
-
-<table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top:10px;">
-	<tr>
-		<td align="right">
-			<select name="searchCondition" class="ct_input_g" style="width:80px">
-				<option value="0" ${ ! empty search.searchCondition && search.searchCondition==0 ? "selected" : "" }>상품번호</option>
-				<option value="1" ${ ! empty search.searchCondition && search.searchCondition==1 ? "selected" : "" }>상품명</option>
-				<option value="2" ${ ! empty search.searchCondition && search.searchCondition==2 ? "selected" : "" }>상품가격</option>
-			</select>
-			<input type="text" name="searchKeyword"  
-						value="${! empty search.searchKeyword ? search.searchKeyword : '' }"
-						class="ct_input_g" style="width:200px; height:19px" />
-		</td>
-		<td align="right" width="70">
-			<table border="0" cellspacing="0" cellpadding="0">
-				<tr>
-					<td width="17" height="23">
-						<img src="/images/ct_btnbg01.gif" width="17" height="23">
-					</td>
-					<td background="/images/ct_btnbg02.gif" class="ct_btn01" style="padding-top:3px;">
-						검색
-					</td>
-					<td width="14" height="23">
-						<img src="/images/ct_btnbg03.gif" width="14" height="23">
-					</td>
-				</tr>
-			</table>
-		</td>
-	</tr>
-</table>
-
-
-<table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top:10px;">
-	<tr>
-		<td colspan="11" >전체  ${resultPage.totalCount} 건수</td>
-	</tr>
-	<tr>
-		<td class="ct_list_b" width="100">미리보기</td>
-		<td class="ct_line02"></td>
-		<td class="ct_list_b" width="150">상품명<br>
-		${param.menu eq 'search' ? '<h7>(상품명 click:상세정보)</h7>' : '<h7>(상품명 click:수정)</h7>'}</td>
-		<td class="ct_line02"></td>
-		<td class="ct_list_b" width="150">가격</td>
-		<td class="ct_line02"></td>
-		<td class="ct_list_b">등록일</td>	
-		<td class="ct_line02"></td>
-		<td class="ct_list_b">현재상태</td>
-		<td class="ct_line02"></td>	
-	</tr>
-	<tr>
-		<td colspan="11" bgcolor="808285" height="1"></td>
-	</tr>
-		<c:forEach var="product" items="${list}">
-				<tr class="ct_list_pop">
-					<td align="center" height="80px">
-					<img src="/images/uploadFiles/${product.fileName.replace(',','')}" width="100px" height="100px" />
-					</td>
-					<td></td>
-					<td align="left">
-						<c:if test="${param.menu eq 'manage'}">
-							<a href="/product/updateProduct?prodNo=${product.prodNo}&menu='manage'">${product.prodName}</a>
-						</c:if>
-						<c:if test="${param.menu eq 'search'}">
-							<a href="/product/getProduct?prodNo=${product.prodNo}&menu='search'">${product.prodName}</a>
-						</c:if>
-					</td>
-					<td></td>
-					<td align="left">${product.price}</td>
-					<td></td>
-					<td align="left">${product.regDate}</td>
-					<td></td>
-					<td align="left">
-						${product.prodCount > 0 ? '판매중' : '재고 없음'}
-					</td>
-					<td></td>	
-				</tr>
-		</c:forEach>
-</table>
-</form>
- -->
 </div>
+  </form>
+
 </body>
 </html>

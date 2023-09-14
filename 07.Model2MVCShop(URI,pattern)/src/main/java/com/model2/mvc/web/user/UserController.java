@@ -186,6 +186,7 @@ public class UserController {
 	public ModelAndView updateUser( @ModelAttribute("user") User user, HttpSession session) throws Exception{
 
 		System.out.println("/user/updateUser : POST");
+		System.out.println("넘겨받은 user"+user);
 		
 		//Business Logic
 		userService.updateUser(user);
