@@ -16,49 +16,24 @@
     <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
     <script type="text/javascript">
         $(function () {
-            // 폼이 서브밋될 때
-            $("form[name='detailForm']").on("submit", function (event) {
-                event.preventDefault(); // 기본 서브밋 동작을 막습니다.
+        	$("form[name='detailForm']").on("submit", function (event) {
+        	    event.preventDefault(); // 기본 서브밋 동작을 막습니다.
 
-                // phone1, phone2, phone3 값이 변경될 때마다 폼 데이터를 수집합니다.
-                $("select[name='phone1'], input[name='phone2'], input[name='phone3']").on("change input", function () {
-                    // phone1, phone2, phone3 값을 가져옵니다.
-                    var phone1 = $("select[name='phone1']").val();
-                    var phone2 = $("input[name='phone2']").val();
-                    var phone3 = $("input[name='phone3']").val();
+        	    // Serialize된 form 데이터를 가져옵니다.
+        	    var formData = $(this).serialize();
+        	    console.log(formData);
 
-                    // phone 값을 조합합니다.
-                    var phoneValue = phone1 + '-' + phone2 + '-' + phone3;
-
-                    // phone 값을 formData에 추가합니다.
-                    console.log($("input:hidden[name='phone']").val(phoneValue))
-                });
-
-                // Serialize된 form 데이터를 가져옵니다.
-                var formData = $(this).serialize();
-                console.log(formData);
-
-                // AJAX 요청을 통해 데이터를 서버로 보냅니다.
-                $.ajax({
-                    url: "/user/updateUser",
-                    method: "POST",
-                    data: formData,
-                    success: function (data) {
-                        // 필요한 경우 서버 응답을 처리합니다.
-                        $(".modal-content").html(data);
-                    }
-                });
-            });
-
-            // 이메일 유효성 검증
-            $("input[name='email']").on("change", function () {
-                var email = $(this).val();
-
-                if (email != "" && (email.indexOf('@') < 1 || email.indexOf('.') == -1)) {
-                    alert("이메일 형식이 아닙니다.");
-                }
-            });
-
+        	    // AJAX 요청을 통해 데이터를 서버로 보냅니다.
+        	    $.ajax({
+        	        url: "/user/updateUser",
+        	        method: "POST",
+        	        data: formData,
+        	        success: function (data) {
+        	            // 필요한 경우 서버 응답을 처리합니다.
+        	            $(".modal-content").html(data);
+        	        }
+        	    });
+        	});
         });
 
     </script>
@@ -74,7 +49,7 @@
 <form name="detailForm">
 
 <input type="hidden" name="userId" value="${user.userId }">
-<input type="hidden" name="phone" value="${user.phone}">
+<!-- <input type="hidden" name="phone" value=""> -->
 
   <div class="container py-3 w-800" style="height: 400px;">
     <div class="row d-flex justify-content-center align-items-center h-100 text-dark">

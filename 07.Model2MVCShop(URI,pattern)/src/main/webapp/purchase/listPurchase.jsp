@@ -32,7 +32,7 @@
 
 		$('td.ct_btn01:contains("검색")').on('click', function() {
 
-			fncGetPurchaseList(1)
+			fncGetPurchaseList(0)
 
 		})
 
@@ -47,10 +47,10 @@
 	    }	
 		
 		// 현재 페이지 번호와 무한 스크롤 활성화 여부를 저장하는 변수
-		let currentPage = 1;
+		//let currentPage = 1;
 		let infiniteScrollEnabled = true;
 		
-		loadMoreData();
+		//loadMoreData();
 		
 		// 스크롤 이벤트 핸들러
 		window.addEventListener("scroll", function() {
@@ -111,7 +111,7 @@
 		        let resultPage = data.resultPage;
 				purchaseList.forEach(function(purchase) {
 					  let row = "<tr class='ct_list_pop'>" +
-					  "<td align='center' height='80px'><img src="+"/images/uploadFiles/"+purchase.purchaseProd.fileName.replace(',','')+" width='100px' height='100px' /></td>" +
+					  "<td align='center' height='80px'><img src="+"/images/uploadFiles/"+purchase.purchaseProd.fileName.split(',')+" width='100px' height='100px' /></td>" +
 		                "<td></td>" +
 		                "<td align='center'><a href='/purchase/getPurchase?tranNo=" + purchase.tranNo + "'>" + purchase.purchaseProd.prodName + "</a></td>" +
 		                "<td></td>" +
@@ -321,7 +321,7 @@
 				<c:forEach var="purchase" items="${list}">
 					<tr class="ct_list_pop">
 						<td align="center"  height="80px">
-						<img src="/images/uploadFiles/${purchase.purchaseProd.fileName.replace(',','')}" width="100px" height="100px" />
+						<img src="/images/uploadFiles/${purchase.purchaseProd.fileName.split(',')}" width="100px" height="100px" />
 						</td>
 						<td></td>
 						<td class="ct_list_b" width="150">

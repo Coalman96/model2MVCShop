@@ -115,7 +115,7 @@
 	        });
 	    });
 
-	/*
+
 	 $(document).on("click", "button.btn-outline-primary:contains('확인')", function() {
 			//Debug..
 			//alert(  $( "td.ct_btn01:contains('수정')" ).html() );
@@ -156,8 +156,8 @@
 	    });
 			//fncUpdateUser();
 		 });
-	*/
-	
+
+
 	});//end of jQuery
 	</script>
 <body>

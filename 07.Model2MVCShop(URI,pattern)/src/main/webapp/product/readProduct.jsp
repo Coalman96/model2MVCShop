@@ -28,7 +28,7 @@
 	
 		$('td.ct_btn01:contains("»Æ¿Œ")').on('click',function (){
 		
-		history.go(-1);
+		history.go(-2);
 	})
 	})
 </script>
