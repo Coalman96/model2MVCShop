@@ -149,7 +149,7 @@ public class UserController {
 	public ModelAndView updateUser( @RequestParam("userId") String userId) throws Exception{
 
 		System.out.println("/user/updateUser : GET");
-		
+		System.out.println("넘겨받은 user"+userId);
 		//Business Logic
 		User user = userService.getUser(userId);
 		
@@ -183,7 +183,7 @@ public class UserController {
 	//PRG (Post/Redirect/Get) 패턴
 	//REST x
 	@RequestMapping( value="updateUser", method=RequestMethod.POST )
-	public ModelAndView updateUser( @ModelAttribute("user") User user, HttpSession session) throws Exception{
+	public void updateUser( @ModelAttribute("user") User user, HttpSession session) throws Exception{
 
 		System.out.println("/user/updateUser : POST");
 		System.out.println("넘겨받은 user"+user);
@@ -197,10 +197,9 @@ public class UserController {
 		}
 		
 		// Model 과 View 연결
-		ModelAndView modelAndView = new ModelAndView();
-		modelAndView.setViewName("redirect:/user/getUser?userId=" + user.getUserId());
+		//ModelAndView modelAndView = new ModelAndView();
+		//modelAndView.setViewName("forward:/user/getUser?userId=" + user.getUserId());
 		
-		return modelAndView;
 	}
 	
 	/* String return Type
